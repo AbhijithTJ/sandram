@@ -1,0 +1,2155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"/>
+  <title>Sandram Falla Group</title>
+  <link href="https://fonts.googleapis.com/css?family=Noto+Sans&display=swap" rel="stylesheet">
+  <style>
+    html {
+      width: 100%;
+      overflow-x: hidden;
+    }
+
+    body {
+      font-family: 'Noto Sans', Arial, 'Arial Unicode MS', sans-serif;
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #111;
+      color: #fff;
+      width: 100%;
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(20, 20, 20, 0.6) !important;
+      backdrop-filter: blur(10px) !important;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15) !important;
+      padding: 0.75rem 1rem;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      width: 100%;
+      box-sizing: border-box;
+      z-index: 1000;
+      transition: transform 0.3s ease;
+    }
+    header h1 {
+      margin: 0;
+      font-size: medium;
+    }
+    header nav {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: transparent !important;
+    }
+
+    header nav a {
+      color: #fff;
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 0.9rem;
+      transition: all 0.3s ease;
+      padding: 0.4rem 0.8rem;
+      border-radius: 4px;
+      white-space: nowrap;
+    }
+
+    header nav a:hover {
+      background: rgba(255, 255, 255, 0.1);
+      transform: translateY(-2px);
+    }
+
+    header nav a.active {
+      background: rgba(255, 255, 255, 0.2);
+      color: #fff;
+    }
+
+    .account-icon {
+      cursor: pointer;
+      transition: all 0.3s ease;
+      padding: 0.5rem;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #fff;
+    }
+
+    .account-icon svg {
+      width: 20px;
+      height: 20px;
+      color: #fff;
+    }
+
+    .account-icon:hover {
+      background: rgba(255, 255, 255, 0.15);
+      transform: translateY(-2px);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .account-icon:hover svg {
+      color: #fff;
+    }
+    
+    /* .hero {
+      background: url("mainposter.png") center/cover no-repeat;
+      height: 90vh;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 4rem 2rem;
+    } */
+    /* .hero h2 {
+      font-size: 3rem;
+      margin: 0;
+    } */
+    /* .hero p {
+      font-size: 1.2rem;
+      max-width: 500px;
+    } */
+    /* .hero button {
+      width: 300px;
+      margin-top: 1rem;
+      padding: 0.75rem 1.5rem;
+      background: #fff;
+      color: #000;
+      border: none;
+      cursor: pointer;
+      font-weight: bold;
+    } */
+    .section {
+      background: #fff;
+      color: #000;
+      padding: 2rem 1rem;
+      margin-top: 0;
+    }
+    .section h3 {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    .cards {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 2rem;
+    }
+    .card {
+      width: 200px;
+      text-align: center;
+    }
+    .card img {
+      width: 100%;
+      height: 300px;
+      object-fit: cover;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 2rem;
+      margin-top: 2rem;
+    }
+
+    .competitions-container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .competition-winner {
+      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+      border-radius: 15px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+      border-left: 5px solid #ffc107;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .competition-winner::before {
+      content: '🏆';
+      position: absolute;
+      top: -10px;
+      right: -10px;
+      font-size: 3rem;
+      opacity: 0.1;
+      transform: rotate(15deg);
+    }
+
+    .competition-title {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #333;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .winner-info {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .winner-details {
+      background: #fff;
+      padding: 1rem;
+      border-radius: 10px;
+      border: 1px solid #e9ecef;
+    }
+
+    .winner-name {
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: #333;
+      margin-bottom: 0.5rem;
+    }
+
+    .winner-falla-id {
+      color: #17a2b8;
+      font-size: 0.9rem;
+      font-weight: 500;
+      margin-top: 0.25rem;
+    }
+
+    .winner-prize {
+      color: #28a745;
+      font-weight: bold;
+      font-size: 1.1rem;
+    }
+
+    .competition-description {
+      color: #666;
+      line-height: 1.6;
+      margin-bottom: 1rem;
+    }
+
+    .announcement-date {
+      color: #999;
+      font-size: 0.9rem;
+      font-style: italic;
+    }
+    footer {
+      background: #222;
+      color: #bbb;
+      text-align: center;
+      padding: 1rem;
+    }
+
+    .slider {
+  overflow: hidden;
+  position: relative;
+  height: 70vh;
+  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+  margin-top: 60px;
+}
+
+.slides {
+  display: flex;
+  width: 100%;
+  height: 100%;
+}
+
+/* Remove the automatic animation since we're using JavaScript control */
+/* animation: slide 15s ease; */
+
+/* single static slide */
+/* .slides {
+  display: block;
+  width: 100%;
+} */
+
+.dots {
+  text-align: center;
+  position: absolute;
+  bottom: 20px;
+  width: 100%;
+  z-index: 5;
+}
+
+.dot {
+  height: 15px;
+  width: 15px;
+  margin: 0 6px;
+  background-color: #bbb;
+  border-radius: 50%;
+  display: inline-block;
+  transition: background-color 0.4s ease;
+  cursor: pointer;
+  animation: fadeInUp 0.6s;
+}
+
+.dot.active {
+  background-color: #fff;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+.hero {
+  flex: 0 0 100%;
+  height: 70vh;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 2rem 1rem;
+  box-sizing: border-box;
+}
+
+.logo-container {
+  display: flex;
+  align-items: center;
+  gap: 1rem; /* space between logo and text */
+}
+
+.logo {
+  height: 50px; /* or whatever size fits your design */
+  width: auto;
+  object-fit:contain;
+}
+
+/* If you want to adjust h1 font-size or margin */
+.logo-container h1 {
+  margin: 0;
+  font-size: 1.5rem;
+  color: #fff;
+}
+
+
+/* .hero { */
+    /* border: 2px solid red; */
+  /* width: 100%;
+  flex-shrink: 0;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  display: flex;
+  flex-direction: column;
+  justify-content: center; */
+  /* padding: 4rem 2rem; */
+  /* position: relative;
+  height: 90vh; */
+/* } */
+
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.hero .content {
+  /* position: relative; */
+  z-index: 1;
+  max-width: 600px;
+}
+
+.hero h2 {
+  font-size: 2.5rem;
+  margin: 0;
+  color: #fff;
+}
+
+.hero p {
+  font-size: 1rem;
+  max-width: 400px;
+  color: #ccc;
+  margin: 1rem 0;
+}
+
+.hero button {
+  width: 200px;
+  margin-top: 1rem;
+  padding: 0.6rem 1.2rem;
+  background: #fff;
+  color: #000;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+  border-radius: 4px;
+  font-size: 0.9rem;
+}
+
+/* Enhanced Slide animation with fade and zoom effects */
+@keyframes slide {
+  0% { 
+    transform: translateX(0%) scale(1);
+    opacity: 1;
+  }
+  25% { 
+    transform: translateX(0%) scale(1.05);
+    opacity: 1;
+  }
+  30% { 
+    transform: translateX(-100%) scale(1);
+    opacity: 0.8;
+  }
+  35% { 
+    transform: translateX(-100%) scale(1.05);
+    opacity: 1;
+  }
+  60% { 
+    transform: translateX(-100%) scale(1.05);
+    opacity: 1;
+  }
+  65% { 
+    transform: translateX(-200%) scale(1);
+    opacity: 0.8;
+  }
+  70% { 
+    transform: translateX(-200%) scale(1.05);
+    opacity: 1;
+  }
+  100% { 
+    transform: translateX(-200%) scale(1.05);
+    opacity: 1;
+  }
+}
+
+/* Slide transition effects */
+.slides {
+  display: flex;
+  width: 100%;
+  transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hero {
+  flex: 0 0 100%;
+  height: 90vh;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* Moving Winner Announcement Ticker Styles */
+.winner-ticker {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(135deg, #ffc107 0%, #ffca2c 100%);
+  color: #000;
+  padding: 12px 0;
+  font-weight: bold;
+  font-size: 16px;
+  z-index: 10;
+  box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.3);
+  border-top: 3px solid #fff;
+  overflow: hidden;
+  transform: translateY(100%);
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  display: none;
+}
+
+.winner-ticker.show {
+  transform: translateY(0);
+}
+
+.winner-ticker .ticker-content {
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+  animation: ticker-scroll 35s ease-in-out infinite;
+}
+
+.winner-ticker .ticker-content:hover {
+  animation-play-state: paused;
+}
+
+.winner-ticker .ticker-content.paused {
+  animation-play-state: paused;
+}
+
+.winner-ticker .trophy-icon {
+  font-size: 20px;
+  margin-right: 10px;
+  animation: bounce 2s infinite;
+}
+
+.winner-ticker .announcement-text {
+  font-size: 16px;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.winner-ticker .winner-names {
+  margin-left: 20px;
+  font-size: 14px;
+  color: #333;
+}
+
+.winner-ticker .close-ticker-btn {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0, 0, 0, 0.2);
+  color: #000;
+  border: none;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  z-index: 1001;
+}
+
+.winner-ticker .close-ticker-btn:hover {
+  background: rgba(0, 0, 0, 0.3);
+  transform: translateY(-50%) scale(1.1);
+}
+
+@keyframes ticker-scroll {
+  0% {
+    transform: translateX(100vw);
+  }
+  50% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-100vw);
+  }
+}
+
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-5px);
+  }
+  60% {
+    transform: translateY(-3px);
+  }
+}
+
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-5px);
+  }
+  60% {
+    transform: translateY(-3px);
+  }
+}
+
+.hero {
+  flex: 0 0 100%;
+  height: 90vh;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 4rem 2rem;
+  box-sizing: border-box;
+  transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: scale(1);
+  overflow: hidden;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(0, 0, 0, 0.4) 0%,
+    rgba(0, 0, 0, 0.2) 50%,
+    rgba(0, 0, 0, 0.6) 100%
+  );
+  z-index: 1;
+}
+
+.hero > * {
+  position: relative;
+  z-index: 2;
+}
+
+.hero:hover {
+  transform: scale(1.02);
+}
+
+.hero:hover::before {
+  background: linear-gradient(
+    135deg,
+    rgba(0, 0, 0, 0.3) 0%,
+    rgba(0, 0, 0, 0.1) 50%,
+    rgba(0, 0, 0, 0.5) 100%
+  );
+}
+
+/* Enhanced dot animations */
+.dot {
+  height: 15px;
+  width: 15px;
+  margin: 0 6px;
+  background-color: rgba(187, 187, 187, 0.5);
+  border-radius: 50%;
+  display: inline-block;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  animation: fadeInUp 0.6s;
+  border: 2px solid transparent;
+}
+
+.dot:hover {
+  background-color: rgba(255, 255, 255, 0.8);
+  transform: scale(1.2);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.dot.active {
+  background-color: #fff;
+  transform: scale(1.3);
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+/* Slide content animations */
+.hero h2 {
+  animation: slideInFromLeft 1s ease-out;
+}
+
+.hero p {
+  animation: slideInFromRight 1s ease-out 0.3s both;
+}
+
+.hero button {
+  animation: slideInFromBottom 1s ease-out 0.6s both;
+}
+
+@keyframes slideInFromLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInFromRight {
+  from {
+    opacity: 0;
+    transform: translateX(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInFromBottom {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Mobile Responsive Design */
+@media (max-width: 768px) {
+  html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    overflow-x: hidden;
+    min-height: 100vh;
+    max-width: 100vw;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  /* Force full width for all containers */
+  .container, .section, .hero, .slider, header, nav, main {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  header {
+    flex-direction: row;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    background: #000;
+    z-index: 1000;
+    transition: transform 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  }
+
+  /* Header scroll hide classes */
+  header.header-hidden {
+    transform: translateY(-100%);
+  }
+
+  header.header-visible {
+    transform: translateY(0);
+  }
+
+  .logo-container {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .logo-container h1 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #fff;
+  }
+
+  .logo {
+    height: 32px;
+  }
+
+  header nav {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    margin-left: auto;
+  }
+
+  header nav a {
+    font-size: 0.75rem;
+    padding: 0.3rem 0.6rem;
+    background: transparent;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+    color: #ccc;
+  }
+
+  header nav a:hover,
+  header nav a.active {
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+  }
+
+  .account-icon {
+    width: 28px;
+    height: 28px;
+    padding: 0.3rem;
+    background: transparent;
+    border: none;
+  }
+
+  .account-icon svg {
+    width: 16px;
+    height: 16px;
+    color: #ccc;
+  }
+
+  .account-icon:hover {
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  .account-icon:hover svg {
+    color: #fff;
+  }
+
+  header nav a:hover {
+    background: rgba(255, 255, 255, 0.2);
+  }
+
+  .slider {
+    height: 60vh;
+    margin-top: 60px;
+    width: 100%;
+    left: 0;
+    right: 0;
+  }
+
+  .hero {
+    height: 60vh;
+    padding: 1.5rem 1rem;
+    margin-top: 60px;
+    width: 100%;
+    left: 0;
+    right: 0;
+  }
+
+  .hero h2 {
+    font-size: 1.5rem;
+    text-align: center;
+    margin-bottom: 0.5rem;
+  }
+
+  .hero p {
+    font-size: 0.85rem;
+    text-align: center;
+    max-width: 100%;
+    margin: 0.5rem 0;
+  }
+
+  .hero button {
+    width: 100%;
+    max-width: 200px;
+    margin: 0.5rem auto;
+    display: block;
+    padding: 0.6rem 1rem;
+    font-size: 0.85rem;
+  }
+
+  .section {
+    padding: 1.5rem 1rem;
+    width: 100%;
+    margin: 0;
+    left: 0;
+    right: 0;
+  }
+
+  .cards {
+    gap: 1rem;
+  }
+
+  .card {
+    width: 100%;
+    max-width: 280px;
+  }
+
+  .card img {
+    height: 250px;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .competition-winner {
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .competition-title {
+    font-size: 1.3rem;
+  }
+
+  .winner-info {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .winner-details {
+    padding: 0.8rem;
+  }
+
+  .winner-name {
+    font-size: 1.1rem;
+  }
+
+  .dots {
+    bottom: 10px;
+  }
+
+  .dot {
+    height: 12px;
+    width: 12px;
+    margin: 0 4px;
+  }
+
+  /* Mobile ticker styles */
+  .winner-ticker {
+    padding: 10px 0;
+    font-size: 14px;
+  }
+
+  .winner-ticker .ticker-content {
+    animation: ticker-scroll 30s ease-in-out infinite;
+  }
+
+  .winner-ticker .trophy-icon {
+    font-size: 16px;
+    margin-right: 8px;
+  }
+
+  .winner-ticker .announcement-text {
+    font-size: 14px;
+  }
+
+  .winner-ticker .winner-names {
+    font-size: 12px;
+    margin-left: 15px;
+  }
+
+  .winner-ticker .close-ticker-btn {
+    width: 20px;
+    height: 20px;
+    font-size: 10px;
+    right: 10px;
+  }
+
+  /* Winner photo improvements for mobile */
+  .winner-item img {
+    width: 100px !important;
+    height: 100px !important;
+    object-fit: cover !important;
+    border-radius: 50% !important;
+    display: block;
+    margin: 0 auto 10px auto;
+    border: 3px solid #ffc107;
+    background: #fff;
+  }
+}
+
+@media (max-width: 480px) {
+  body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    overflow-x: hidden;
+  }
+
+  header {
+    padding: 0.4rem 0.8rem;
+    width: 100%;
+    left: 0;
+    right: 0;
+  }
+
+  .logo-container h1 {
+    font-size: 0.9rem;
+  }
+
+  .logo {
+    height: 28px;
+  }
+
+  header nav a {
+    font-size: 0.65rem;
+    padding: 0.25rem 0.5rem;
+  }
+
+  .account-icon {
+    width: 24px;
+    height: 24px;
+    padding: 0.25rem;
+  }
+
+  .account-icon svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  .hero h2 {
+    font-size: 1.3rem;
+  }
+
+  .hero p {
+    font-size: 0.8rem;
+  }
+
+  .section {
+    padding: 1rem 0.5rem;
+    width: 100%;
+    margin: 0;
+    left: 0;
+    right: 0;
+  }
+
+  .card img {
+    height: 200px;
+  }
+
+  .slider {
+    width: 100%;
+    left: 0;
+    right: 0;
+  }
+
+  .hero {
+    width: 100%;
+    left: 0;
+    right: 0;
+  }
+}
+
+/* Tablet Responsive Design */
+@media (min-width: 769px) and (max-width: 1024px) {
+  header {
+    padding: 1rem 1.5rem;
+  }
+
+  .hero h2 {
+    font-size: 2.5rem;
+  }
+
+  .hero p {
+    font-size: 1.1rem;
+  }
+
+  .cards {
+    gap: 1.5rem;
+  }
+
+  .card {
+    width: 180px;
+  }
+
+  .grid {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  }
+}
+
+/* Log Viewer Styles */
+#logViewerToggle {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  z-index: 99999;
+  background: #222;
+  color: #fff;
+  border: none;
+  border-radius: 20px 20px 0 0;
+  padding: 8px 18px;
+  font-size: 16px;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+#logViewerToggle:hover { opacity: 1; }
+#logViewer {
+  position: fixed;
+  right: 20px;
+  bottom: 60px;
+  width: 90vw;
+  max-width: 500px;
+  max-height: 40vh;
+  background: #181818;
+  color: #fff;
+  border-radius: 10px 10px 0 0;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.4);
+  z-index: 99999;
+  display: none;
+  flex-direction: column;
+  font-size: 13px;
+  overflow: hidden;
+}
+#logViewerHeader {
+  background: #333;
+  padding: 8px 16px;
+  font-weight: bold;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #444;
+}
+#logViewerClose {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 18px;
+  cursor: pointer;
+}
+#logViewerContent {
+  padding: 10px;
+  overflow-y: auto;
+  white-space: pre-wrap;
+  font-family: monospace;
+  background: #181818;
+  flex: 1;
+}
+.log-info { color: #b3e5fc; }
+.log-warn { color: #ffe082; }
+.log-error { color: #ff8a80; }
+  </style>
+  
+  <!-- Loading Overlay -->
+  <div id="loadingOverlay" style="
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.9);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    transition: opacity 0.5s ease;
+  ">
+    <div style="
+      width: 60px;
+      height: 60px;
+      border: 4px solid #333;
+      border-top: 4px solid #fff;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-bottom: 20px;
+    "></div>
+    <div style="
+      color: #fff;
+      font-size: 18px;
+      font-weight: bold;
+      text-align: center;
+    ">Loading Sandram...</div>
+    <div style="
+      color: #ccc;
+      font-size: 14px;
+      margin-top: 10px;
+      text-align: center;
+    ">Please wait while we prepare your experience</div>
+  </div>
+
+  <style>
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    .fade-out {
+      opacity: 0;
+      pointer-events: none;
+    }
+  </style>
+  
+</head>
+
+<body>
+  <header>
+    <button class="hamburger" id="hamburgerBtn" aria-label="Open navigation" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+    <div class="logo-container">
+        <img src="images/sandram-logo.png" alt="Sandram Logo" class="logo" />
+    <h1>Sandram</h1>
+    </div>
+    <nav id="mainNav">
+      <a href="index.html" class="active">HOME</a>
+      <a href="upcomingevents.html">UPCOMING EVENTS</a>
+      <a href="members.html">MEMBERS</a>
+      <a href="about.html">ABOUT</a>
+      <div class="account-icon" onclick="window.location.href='adminpage/login.html'" title="Admin Login">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 12C14.7614 12 17 9.76142 17 7C17 4.23858 14.7614 2 12 2C9.23858 2 7 4.23858 7 7C7 9.76142 9.23858 12 12 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M20.5899 22C20.5899 18.13 16.7399 15 11.9999 15C7.25991 15 3.40991 18.13 3.40991 22" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+    </nav>
+  </header>
+
+  <section class="slider" id="sliderSection" style="display: none;">
+    <div class="slides" id="slidesContainer">
+      <!-- Slider content will be loaded here dynamically -->
+        </div>
+    <div class="dots" id="dotsContainer">
+      <!-- Dots will be generated dynamically -->
+      </div>
+    <!-- Competition Winner Notification -->
+    <div class="winner-notification" id="winnerNotification">
+      <div class="notification-content">
+        <span class="trophy-icon">🏆</span>
+        <span class="winner-text" id="winnerText">New competition winners announced!</span>
+        <button class="close-btn" onclick="closeWinnerNotification()">×</button>
+        </div>
+      </div>
+
+    <!-- Moving Winner Announcement Ticker -->
+    <div class="winner-ticker" id="winnerTicker">
+      <div class="ticker-content" id="tickerContent">
+        <span class="trophy-icon">🏆</span>
+        <span class="announcement-text">Winner Announced!</span>
+        <span class="winner-names" id="tickerWinnerNames">Place check the results at bottom!</span>
+        </div>
+      <!-- Turn Off Notification Button (inline, left of close) -->
+      <button id="turnOffTickerBtn" style="display: none; background: #dc3545; color: white; border: none; padding: 6px 12px; border-radius: 4px; font-size: 14px; cursor: pointer; margin-right: 8px; vertical-align: middle;">Turn Off Notification</button>
+      <button class="close-ticker-btn" onclick="closeWinnerTicker()">×</button>
+      </div>
+  </section>
+  
+  
+
+  <section class="section" id="castSection" style="display: none;">
+    <h3>Cast</h3>
+    <div class="cards" id="castCards">
+      <!-- Cast members will be loaded here dynamically -->
+      </div>
+  </section>
+
+  <section class="section" id="otherContentSection" style="display: none;">
+    <div class="grid" id="otherContentGrid">
+      <!-- Other content will be loaded here dynamically -->
+    </div>
+  </section>
+
+  <section class="section" id="bottomPosterSection" style="display: none;">
+    <div class="grid" id="bottomPosterGrid">
+      <!-- Bottom poster content will be loaded here dynamically -->
+    </div>
+  </section>
+
+  <section class="section" id="competitionsSection" style="display: none;">
+    <h3>🏆 Competition Winners</h3>
+    <div class="competitions-container" id="competitionsContainer">
+      <!-- Competition winners will be loaded here dynamically -->
+    </div>
+  </section>
+
+  <footer>
+    &copy; 2025 Sandram. All rights reserved.
+  </footer>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
+    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyD4-bmCzFRmENSiquMfRkLmXY1gGL1ws_Q",
+      authDomain: "sandramfalla-5b850.firebaseapp.com",
+      projectId: "sandramfalla-5b850",
+      storageBucket: "sandramfalla-5b850.firebasestorage.app",
+      messagingSenderId: "31296505457",
+      appId: "1:31296505457:web:cb1d887e21844ad9f5fdd0",
+      measurementId: "G-8CZYT0K63J"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // Load cast members for index page
+    async function loadCastForIndex() {
+      const castSection = document.getElementById('castSection');
+      const castCards = document.getElementById('castCards');
+
+      try {
+        const querySnapshot = await getDocs(collection(db, "cast"));
+        
+        if (querySnapshot.empty) {
+          // No cast members found - keep section hidden
+          return;
+        }
+
+        // Show the cast section
+        castSection.style.display = "block";
+
+        // Load cast members
+        querySnapshot.forEach((doc) => {
+          const data = doc.data();
+          const castHTML = `
+            <div class="card">
+              <img src="${data.image}" alt="${data.fullName}">
+              <h4>${data.characterName}</h4>
+              <p>${data.fullName}</p>
+            </div>
+          `;
+          castCards.insertAdjacentHTML("beforeend", castHTML);
+        });
+
+      } catch (error) {
+        console.error("Error loading cast for index:", error);
+        // Keep section hidden if there's an error
+      }
+    }
+
+    // Load sliders for index page
+    async function loadSlidersForIndex() {
+      const sliderSection = document.getElementById('sliderSection');
+      const slidesContainer = document.getElementById('slidesContainer');
+      const dotsContainer = document.getElementById('dotsContainer');
+
+      try {
+        const querySnapshot = await getDocs(collection(db, "sliders"));
+        
+        if (querySnapshot.empty) {
+          // No sliders found - keep section hidden
+          return;
+        }
+
+        // Show the slider section
+        sliderSection.style.display = "block";
+
+        let slidesHTML = '';
+        let dotsHTML = '';
+        let slideIndex = 0;
+
+        querySnapshot.forEach((doc) => {
+          const data = doc.data();
+          
+          // Create slide HTML
+          slidesHTML += `
+            <div class="hero" style="background-image: url('${data.image}');">
+              <div class="content">
+                <h2>${data.movieName}</h2>
+                <p>${data.description}</p>
+                <button>WATCH TRAILER</button>
+              </div>
+            </div>
+          `;
+
+          // Create dot HTML
+          dotsHTML += `<span class="dot ${slideIndex === 0 ? 'active' : ''}" onclick="showSlide(${slideIndex})"></span>`;
+          slideIndex++;
+        });
+
+        // Set the HTML content
+        slidesContainer.innerHTML = slidesHTML;
+        dotsContainer.innerHTML = dotsHTML;
+
+        // Initialize slider functionality
+        initializeSlider();
+
+      } catch (error) {
+        console.error("Error loading sliders for index:", error);
+        // Keep section hidden if there's an error
+      }
+    }
+
+    // Initialize slider functionality with enhanced animations
+    function initializeSlider() {
+    let currentSlide = 0;
+    const slides = document.querySelector('.slides');
+    const dots = document.querySelectorAll('.dot');
+    const slider = document.querySelector('.slider');
+      
+      if (!slides || !dots.length) return;
+  
+    // Function to show slide with optimized animations
+    function showSlide(index) {
+      if (index < 0 || index >= dots.length) return;
+      
+      // Use requestAnimationFrame for smooth transitions
+      requestAnimationFrame(() => {
+        slides.style.transition = 'transform 0.8s cubic-bezier(0.4, 0, 0.2, 1)';
+        currentSlide = index;
+        slides.style.transform = `translateX(-${index * 100}%)`;
+        
+        // Update dots with optimized animation
+        dots.forEach((dot, i) => {
+          dot.classList.remove('active');
+          if (i === index) {
+            // Use requestAnimationFrame instead of setTimeout
+            requestAnimationFrame(() => {
+              dot.classList.add('active');
+            });
+          }
+        });
+
+        // Trigger content animations for the new slide with optimized approach
+        const currentHero = slides.children[index];
+        if (currentHero) {
+          const title = currentHero.querySelector('h2');
+          const description = currentHero.querySelector('p');
+          const button = currentHero.querySelector('button');
+          
+          // Optimize animation resets without forced reflow
+          if (title) {
+            title.style.animation = 'none';
+            // Use requestAnimationFrame instead of offsetHeight
+            requestAnimationFrame(() => {
+              title.style.animation = 'slideInFromLeft 1s ease-out';
+            });
+          }
+          
+          if (description) {
+            description.style.animation = 'none';
+            requestAnimationFrame(() => {
+              description.style.animation = 'slideInFromRight 1s ease-out 0.3s both';
+            });
+          }
+          
+          if (button) {
+            button.style.animation = 'none';
+            requestAnimationFrame(() => {
+              button.style.animation = 'slideInFromBottom 1s ease-out 0.6s both';
+            });
+          }
+        }
+      });
+    }
+
+    // Optimized auto-advance slides with better performance
+    let slideInterval = null;
+    let slideIntervalId = null;
+
+    function startSlideInterval() {
+      if (slideIntervalId) {
+        clearInterval(slideIntervalId);
+      }
+      slideIntervalId = setInterval(() => {
+        currentSlide = (currentSlide + 1) % dots.length;
+        showSlide(currentSlide);
+      }, 6000);
+    }
+
+    function stopSlideInterval() {
+      if (slideIntervalId) {
+        clearInterval(slideIntervalId);
+        slideIntervalId = null;
+      }
+    }
+
+    // Start the interval
+    startSlideInterval();
+  
+    // Pause on hover with optimized event handling
+    slider.addEventListener('mouseenter', stopSlideInterval);
+    
+    slider.addEventListener('mouseleave', startSlideInterval);
+
+      // Add touch/swipe support for mobile with passive event listeners
+      let startX = 0;
+      let endX = 0;
+
+      slider.addEventListener('touchstart', (e) => {
+        startX = e.touches[0].clientX;
+      }, { passive: true });
+
+      slider.addEventListener('touchend', (e) => {
+        endX = e.changedTouches[0].clientX;
+        handleSwipe();
+      }, { passive: true });
+
+      function handleSwipe() {
+        const swipeThreshold = 50;
+        const diff = startX - endX;
+        
+        if (Math.abs(diff) > swipeThreshold) {
+          if (diff > 0) {
+            // Swipe left - next slide
+            currentSlide = (currentSlide + 1) % dots.length;
+          } else {
+            // Swipe right - previous slide
+            currentSlide = (currentSlide - 1 + dots.length) % dots.length;
+          }
+          showSlide(currentSlide);
+        }
+      }
+
+      // Add keyboard navigation
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowLeft') {
+          currentSlide = (currentSlide - 1 + dots.length) % dots.length;
+          showSlide(currentSlide);
+        } else if (e.key === 'ArrowRight') {
+          currentSlide = (currentSlide + 1) % dots.length;
+          showSlide(currentSlide);
+        }
+      });
+
+      // Make showSlide function globally available
+      window.showSlide = showSlide;
+    }
+
+    // Load bottom posters for index page
+    async function loadBottomPostersForIndex() {
+      const bottomPosterSection = document.getElementById('bottomPosterSection');
+      const bottomPosterGrid = document.getElementById('bottomPosterGrid');
+
+      try {
+        const querySnapshot = await getDocs(collection(db, "bottomPosters"));
+        
+        if (querySnapshot.empty) {
+          // No bottom posters found - keep section hidden
+          return;
+        }
+
+        // Show the bottom poster section
+        bottomPosterSection.style.display = "block";
+
+        // Load bottom posters
+        querySnapshot.forEach((doc) => {
+          const data = doc.data();
+          const posterHTML = `
+            <div>
+              <h4>WITH SCRIPTS</h4>
+              <img src="${data.image}" alt="Poster" style="width: 100%;">
+            </div>
+            <div>
+              <h4>SYNOPSIS</h4>
+              <p>${data.description}</p>
+            </div>
+          `;
+          bottomPosterGrid.innerHTML = posterHTML;
+        });
+
+      } catch (error) {
+        console.error("Error loading bottom posters for index:", error);
+        // Keep section hidden if there's an error
+      }
+    }
+
+
+
+    // Load other content for index page
+    async function loadOtherContentForIndex() {
+      const otherContentSection = document.getElementById('otherContentSection');
+      const otherContentGrid = document.getElementById('otherContentGrid');
+
+      try {
+        const querySnapshot = await getDocs(collection(db, "otherContent"));
+        
+        if (querySnapshot.empty) {
+          // No other content found - keep section hidden
+          return;
+        }
+
+        // Show the other content section
+        otherContentSection.style.display = "block";
+
+        // Load other content (take the first one if multiple exist)
+        const doc = querySnapshot.docs[0];
+        const data = doc.data();
+        
+        let contentHTML = '';
+        
+        // Add Behind The Scenes if it exists
+        if (data.behindTheScenes && data.behindTheScenes.trim()) {
+          contentHTML += `
+            <div>
+              <h4>BEHIND THE SCENES</h4>
+              <p>${data.behindTheScenes}</p>
+            </div>
+          `;
+        }
+        
+        // Add Interview if it exists
+        if (data.interview && data.interview.trim()) {
+          contentHTML += `
+            <div>
+              <h4>INTERVIEW</h4>
+              <p>${data.interview}</p>
+            </div>
+          `;
+        }
+        
+        // Add Analysis if it exists
+        if (data.analysis && data.analysis.trim()) {
+          contentHTML += `
+            <div>
+              <h4>ANALYSIS</h4>
+              <p>${data.analysis}</p>
+            </div>
+          `;
+        }
+
+        // Set the HTML content
+        otherContentGrid.innerHTML = contentHTML;
+
+      } catch (error) {
+        console.error("Error loading other content for index:", error);
+        // Keep section hidden if there's an error
+      }
+    }
+
+    // Function to hide loading overlay with optimized timing
+    function hideLoadingOverlay() {
+      const loadingOverlay = document.getElementById('loadingOverlay');
+      if (loadingOverlay) {
+        loadingOverlay.classList.add('fade-out');
+        // Use requestAnimationFrame instead of setTimeout for better performance
+        requestAnimationFrame(() => {
+          loadingOverlay.style.display = 'none';
+        });
+      }
+    }
+
+    // Load all content and hide loading overlay
+    async function loadAllContent() {
+      try {
+        // Load all content in parallel
+        await Promise.all([
+          loadCastForIndex(),
+          loadSlidersForIndex(),
+          loadBottomPostersForIndex(),
+          loadOtherContentForIndex(),
+          loadCompetitionsForIndex()
+        ]);
+        
+        // Hide loading overlay after all content is loaded
+        hideLoadingOverlay();
+      } catch (error) {
+        console.error("Error loading content:", error);
+        // Hide loading overlay even if there's an error
+        hideLoadingOverlay();
+      }
+    }
+
+    // Moving Winner Announcement Ticker System with optimized performance
+    let tickerQueue = [];
+    let isTickerShowing = false;
+
+    // Function to show winner ticker with optimized animations
+    function showWinnerTicker(competitionName, winners) {
+      const ticker = document.getElementById('winnerTicker');
+      const tickerWinnerNames = document.getElementById('tickerWinnerNames');
+      const tickerContent = document.getElementById('tickerContent');
+      
+      if (!ticker || !tickerWinnerNames) return;
+
+      // Only show ticker if there are actual winners or competition data
+      if (!competitionName || competitionName.trim() === '') {
+        ticker.style.display = 'none';
+        return;
+      }
+
+      // Additional validation - only show if there are actual winners
+      if (!winners || winners.length === 0) {
+        ticker.style.display = 'none';
+        return;
+      }
+
+      // Validate that winners have actual names
+      const validWinners = winners.filter(w => w.name && w.name.trim() !== '');
+      if (validWinners.length === 0) {
+        ticker.style.display = 'none';
+        return;
+      }
+
+      // Create ticker message
+      let message = `🏆 ${competitionName} - Winner Announced! Place check the results at bottom!`;
+      if (validWinners.length > 0) {
+        const winnerNames = validWinners.slice(0, 5).map(w => w.name).join(', ');
+        message = `🏆 ${competitionName} - Winners: ${winnerNames}${validWinners.length > 5 ? ' and more!' : ''} - Place check the results at bottom!`;
+      }
+
+      tickerWinnerNames.textContent = message;
+
+      // Optimize animation reset without forced reflow
+      tickerContent.classList.remove('paused');
+      tickerContent.style.animation = 'none';
+      // Use requestAnimationFrame instead of offsetHeight
+      requestAnimationFrame(() => {
+        tickerContent.style.animation = null;
+      });
+
+      // Show ticker with animation
+      ticker.style.display = 'block';
+      ticker.classList.add('show');
+      isTickerShowing = true;
+      
+      console.log('Ticker shown:', competitionName, validWinners.length, 'winners');
+
+      // Auto-hide after 20 seconds with optimized timing
+      setTimeout(() => {
+        hideWinnerTicker();
+      }, 20000);
+    }
+
+    // Function to hide winner ticker with optimized timing
+    function hideWinnerTicker() {
+      const ticker = document.getElementById('winnerTicker');
+      if (ticker) {
+        ticker.classList.remove('show');
+        isTickerShowing = false;
+        
+        // Process next ticker in queue with optimized timing
+        setTimeout(() => {
+          if (tickerQueue.length > 0) {
+            const nextTicker = tickerQueue.shift();
+            showWinnerTicker(nextTicker.competitionName, nextTicker.winners);
+          } else {
+            // Hide ticker completely if no more items in queue
+            ticker.style.display = 'none';
+          }
+        }, 500);
+      }
+    }
+
+    // Global function to close ticker (called from HTML)
+    window.closeWinnerTicker = hideWinnerTicker;
+
+    // Function to add ticker to queue
+    function queueWinnerTicker(competitionName, winners) {
+      console.log('Queueing ticker for:', competitionName, winners?.length, 'winners');
+      
+      // Validate before adding to queue
+      if (!competitionName || competitionName.trim() === '') {
+        console.log('Invalid competition name');
+        return;
+      }
+      
+      if (!winners || winners.length === 0) {
+        console.log('No winners array');
+        return;
+      }
+      
+      // Check if there are valid winners with actual names
+      const validWinners = winners.filter(w => w.name && w.name.trim() !== '');
+      if (validWinners.length === 0) {
+        console.log('No valid winners found');
+        return;
+      }
+      
+      console.log('Adding to queue:', competitionName, validWinners.length, 'valid winners');
+      tickerQueue.push({ competitionName, winners: validWinners });
+      
+      if (!isTickerShowing) {
+        const nextTicker = tickerQueue.shift();
+        console.log('Showing ticker immediately:', nextTicker.competitionName);
+        showWinnerTicker(nextTicker.competitionName, nextTicker.winners);
+      }
+    }
+
+    // Enhanced competition loading with notification support
+    async function loadCompetitionsForIndex() {
+      const competitionsSection = document.getElementById('competitionsSection');
+      const competitionsContainer = document.getElementById('competitionsContainer');
+      const ticker = document.getElementById('winnerTicker');
+
+      try {
+        const querySnapshot = await getDocs(collection(db, "competitions"));
+        
+        if (querySnapshot.empty) {
+          // No competitions found - hide both section and ticker
+          competitionsSection.style.display = "none";
+          if (ticker) {
+            ticker.style.display = 'none';
+          }
+          return;
+        }
+
+        // Show the competitions section
+        competitionsSection.style.display = "block";
+
+        // Collect all recent competitions for notifications
+        const recentCompetitions = [];
+        let hasAnyWinners = false;
+
+        // Load competitions
+        querySnapshot.forEach((doc) => {
+          const data = doc.data();
+          let winnersHTML = '';
+          let allWinners = [];
+          
+          // 1st Place Winners
+          if (data.firstPlaceCount && data.firstPlaceCount > 0) {
+            winnersHTML += `
+              <div class="winner-details">
+                <div class="winner-name">🥇 1st Place</div>
+                <div class="winner-prize">💰 ${data.firstPlacePrize}</div>
+            `;
+            
+            for (let i = 1; i <= data.firstPlaceCount; i++) {
+              const winnerName = data[`firstPlaceWinner${i}Name`];
+              const winnerFallaId = data[`firstPlaceWinner${i}FallaId`];
+              const winnerPhoto = data[`firstPlaceWinner${i}Photo`];
+              if (winnerName && winnerName.trim() !== '') {
+                winnersHTML += `
+                  <div class="winner-item">
+                    ${winnerPhoto ? `<img src="${winnerPhoto}" alt="${winnerName}" style="width: 80px; height: 80px; object-fit: cover; border-radius: 50%; margin-bottom: 10px; border: 3px solid #ffc107;">` : ''}
+                    <div class="winner-name">${winnerName}</div>
+                    ${winnerFallaId ? `<div class="winner-falla-id">🆔 ${winnerFallaId}</div>` : ''}
+                  </div>
+                `;
+                allWinners.push({ name: winnerName, position: '1st Place', photo: winnerPhoto, fallaId: winnerFallaId });
+                hasAnyWinners = true;
+              }
+            }
+            winnersHTML += '</div>';
+          }
+          
+          // 2nd Place Winners
+          if (data.secondPlaceCount && data.secondPlaceCount > 0) {
+            winnersHTML += `
+              <div class="winner-details">
+                <div class="winner-name">🥈 2nd Place</div>
+                <div class="winner-prize">💰 ${data.secondPlacePrize}</div>
+            `;
+            
+            for (let i = 1; i <= data.secondPlaceCount; i++) {
+              const winnerName = data[`secondPlaceWinner${i}Name`];
+              const winnerFallaId = data[`secondPlaceWinner${i}FallaId`];
+              const winnerPhoto = data[`secondPlaceWinner${i}Photo`];
+              if (winnerName && winnerName.trim() !== '') {
+                winnersHTML += `
+                  <div class="winner-item">
+                    ${winnerPhoto ? `<img src="${winnerPhoto}" alt="${winnerName}" style="width: 80px; height: 80px; object-fit: cover; border-radius: 50%; margin-bottom: 10px; border: 3px solid #ffc107;">` : ''}
+                    <div class="winner-name">${winnerName}</div>
+                    ${winnerFallaId ? `<div class="winner-falla-id">🆔 ${winnerFallaId}</div>` : ''}
+                  </div>
+                `;
+                allWinners.push({ name: winnerName, position: '2nd Place', photo: winnerPhoto, fallaId: winnerFallaId });
+                hasAnyWinners = true;
+              }
+            }
+            winnersHTML += '</div>';
+          }
+          
+          // 3rd Place Winners
+          if (data.thirdPlaceCount && data.thirdPlaceCount > 0) {
+            winnersHTML += `
+              <div class="winner-details">
+                <div class="winner-name">🥉 3rd Place</div>
+                <div class="winner-prize">💰 ${data.thirdPlacePrize}</div>
+            `;
+            
+            for (let i = 1; i <= data.thirdPlaceCount; i++) {
+              const winnerName = data[`thirdPlaceWinner${i}Name`];
+              const winnerFallaId = data[`thirdPlaceWinner${i}FallaId`];
+              const winnerPhoto = data[`thirdPlaceWinner${i}Photo`];
+              if (winnerName && winnerName.trim() !== '') {
+                winnersHTML += `
+                  <div class="winner-item">
+                    ${winnerPhoto ? `<img src="${winnerPhoto}" alt="${winnerName}" style="width: 80px; height: 80px; object-fit: cover; border-radius: 50%; margin-bottom: 10px; border: 3px solid #ffc107;">` : ''}
+                    <div class="winner-name">${winnerName}</div>
+                    ${winnerFallaId ? `<div class="winner-falla-id">🆔 ${winnerFallaId}</div>` : ''}
+                  </div>
+                `;
+                allWinners.push({ name: winnerName, position: '3rd Place', photo: winnerPhoto, fallaId: winnerFallaId });
+                hasAnyWinners = true;
+              }
+            }
+            winnersHTML += '</div>';
+          }
+
+          const competitionHTML = `
+            <div class="competition-winner">
+              <div class="competition-title">
+                🏆 ${data.competitionName}
+              </div>
+              <div class="competition-description">
+                ${data.description}
+              </div>
+              <div class="winner-info">
+                ${winnersHTML}
+              </div>
+              <div class="announcement-date">
+                Announced on: ${new Date(data.announcementDate).toLocaleDateString()}
+              </div>
+            </div>
+          `;
+          competitionsContainer.insertAdjacentHTML("beforeend", competitionHTML);
+
+          // Check if competition has actual winners (show all competitions with winners)
+          const announcementDate = new Date(data.announcementDate);
+          const now = new Date();
+          const timeDiff = now - announcementDate;
+          const hoursDiff = timeDiff / (1000 * 60 * 60);
+          
+          console.log('Competition:', data.competitionName, 'Hours ago:', hoursDiff, 'Winners:', allWinners.length);
+          
+          if (allWinners.length > 0) {
+            recentCompetitions.push({
+              name: data.competitionName,
+              winners: allWinners,
+              hoursAgo: hoursDiff
+            });
+            console.log('Added to recent competitions:', data.competitionName);
+          }
+        });
+
+        // Show notifications for all competitions with actual winners
+        if (recentCompetitions.length > 0 && hasAnyWinners) {
+          console.log('Found competitions with winners:', recentCompetitions.length);
+          console.log('Recent competitions:', recentCompetitions);
+          // Sort by most recent first
+          recentCompetitions.sort((a, b) => a.hoursAgo - b.hoursAgo);
+          
+          // Queue all competitions with winners
+          recentCompetitions.forEach(competition => {
+            console.log('Queueing competition:', competition.name, competition.winners.length, 'winners');
+            queueWinnerTicker(competition.name, competition.winners);
+          });
+          
+          // Show the ticker
+          if (ticker) {
+            ticker.style.display = 'block';
+            ticker.style.visibility = 'visible';
+            ticker.style.opacity = '1';
+            console.log('Ticker display set to block');
+          }
+        } else {
+          console.log('No competitions with winners found');
+          console.log('hasAnyWinners:', hasAnyWinners, 'recentCompetitions.length:', recentCompetitions.length);
+          // Hide ticker if no competitions with winners
+          if (ticker) {
+            ticker.style.display = 'none';
+          }
+        }
+
+      } catch (error) {
+        console.error("Error loading competitions for index:", error);
+        // Hide ticker on error
+        if (ticker) {
+          ticker.style.display = 'none';
+        }
+      }
+    }
+
+    // Load content when page loads
+    loadAllContent();
+    
+    // Ensure ticker is hidden by default and optimize page load
+    window.addEventListener('load', function() {
+      const ticker = document.getElementById('winnerTicker');
+      if (ticker) {
+        ticker.style.display = 'none';
+      }
+      
+      // Optimize ticker refresh - use requestAnimationFrame instead of setTimeout
+      requestAnimationFrame(() => {
+        console.log('Optimized ticker refresh after page load');
+        loadCompetitionsForIndex();
+      });
+    });
+
+    // Show/hide the Turn Off Notification button based on ticker visibility
+    function updateTurnOffButtonVisibility() {
+      const ticker = document.getElementById('winnerTicker');
+      const btn = document.getElementById('turnOffTickerBtn');
+      if (ticker && btn) {
+        btn.style.display = (ticker.style.display === 'block' || ticker.classList.contains('show')) ? 'inline-block' : 'none';
+      }
+    }
+
+    // Hook into ticker show/hide
+    const originalShowWinnerTicker = showWinnerTicker;
+    showWinnerTicker = function(...args) {
+      originalShowWinnerTicker.apply(this, args);
+      updateTurnOffButtonVisibility();
+    };
+    const originalHideWinnerTicker = hideWinnerTicker;
+    hideWinnerTicker = function(...args) {
+      originalHideWinnerTicker.apply(this, args);
+      updateTurnOffButtonVisibility();
+    };
+
+    // Button click handler
+    document.getElementById('turnOffTickerBtn').addEventListener('click', function() {
+      const ticker = document.getElementById('winnerTicker');
+      if (ticker) {
+        ticker.style.display = 'none';
+        ticker.classList.remove('show');
+        updateTurnOffButtonVisibility();
+      }
+    });
+
+    // Header scroll hide functionality
+    let lastScrollTop = 0;
+    const header = document.querySelector('header');
+    const scrollThreshold = 50; // Minimum scroll distance to trigger hide/show
+
+    function handleScroll() {
+      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      const scrollDelta = scrollTop - lastScrollTop;
+
+      // Only trigger on mobile devices
+      if (window.innerWidth <= 768) {
+        if (scrollDelta > scrollThreshold && scrollTop > 100) {
+          // Scrolling down - hide header
+          header.classList.add('header-hidden');
+          header.classList.remove('header-visible');
+        } else if (scrollDelta < -scrollThreshold) {
+          // Scrolling up - show header
+          header.classList.remove('header-hidden');
+          header.classList.add('header-visible');
+        }
+      } else {
+        // On desktop, always show header
+        header.classList.remove('header-hidden');
+        header.classList.add('header-visible');
+      }
+
+      lastScrollTop = scrollTop;
+    }
+
+    // Add scroll event listener with throttling for better performance
+    let ticking = false;
+    function requestTick() {
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          handleScroll();
+          ticking = false;
+        });
+        ticking = true;
+      }
+    }
+
+    window.addEventListener('scroll', requestTick, { passive: true });
+
+    // Initialize header state
+    header.classList.add('header-visible');
+  </script>
+
+  <style>
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      width: 38px;
+      height: 38px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      margin-right: 10px;
+      z-index: 1100;
+    }
+    .hamburger span {
+      display: block;
+      width: 26px;
+      height: 3px;
+      margin: 4px 0;
+      background: #fff;
+      border-radius: 2px;
+      transition: all 0.3s;
+    }
+    @media (max-width: 768px) {
+      .hamburger {
+        display: flex;
+      }
+      header {
+        flex-wrap: nowrap;
+      }
+      .logo-container {
+        flex: 1 1 auto;
+        justify-content: flex-start;
+        margin-left: 0.2rem;
+      }
+      nav#mainNav {
+        position: fixed;
+        top: 56px;
+        left: 0;
+        right: 0;
+        background: #181818;
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 0.5rem 1.2rem 1.2rem 1.2rem;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+        border-bottom-left-radius: 16px;
+        border-bottom-right-radius: 16px;
+        z-index: 1099;
+        display: none;
+        gap: 0.5rem;
+        animation: fadeInNav 0.25s;
+      }
+      nav#mainNav.open {
+        display: flex;
+      }
+      nav#mainNav a {
+        display: block;
+        width: 100%;
+        padding: 0.7rem 0.5rem;
+        font-size: 1.05rem;
+        border-radius: 8px;
+        margin: 0.1rem 0;
+        text-align: left;
+      }
+      .account-icon {
+        margin-top: 0.5rem;
+      }
+      @keyframes fadeInNav {
+        from { opacity: 0; transform: translateY(-10px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      header nav {
+        display: none !important;
+      }
+    }
+    @media (max-width: 768px) {
+      header nav#mainNav.open {
+        display: flex !important;
+      }
+    }
+  </style>
+  <script>
+    // Hamburger menu toggle and smart visibility
+    document.addEventListener('DOMContentLoaded', function() {
+      const hamburger = document.getElementById('hamburgerBtn');
+      const nav = document.getElementById('mainNav');
+      const navLinks = nav.querySelectorAll('a');
+
+      function updateNavDisplay() {
+        const isMobile = window.innerWidth <= 768;
+        if (isMobile) {
+          if (navLinks.length > 3) {
+            hamburger.style.display = 'flex';
+            nav.classList.remove('inline');
+            if (!nav.classList.contains('open')) nav.style.display = 'none';
+          } else {
+            hamburger.style.display = 'none';
+            nav.classList.add('inline');
+            nav.style.display = 'flex';
+          }
+        } else {
+          hamburger.style.display = 'none';
+          nav.classList.remove('inline');
+          nav.style.display = '';
+        }
+      }
+
+      hamburger.addEventListener('click', function(e) {
+        const isOpen = nav.classList.toggle('open');
+        hamburger.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+        nav.style.display = isOpen ? 'flex' : 'none';
+      });
+
+      document.addEventListener('click', function(e) {
+        if (!nav.contains(e.target) && !hamburger.contains(e.target)) {
+          nav.classList.remove('open');
+          hamburger.setAttribute('aria-expanded', 'false');
+          if (window.innerWidth <= 768 && navLinks.length > 3) nav.style.display = 'none';
+        }
+      });
+
+      window.addEventListener('resize', updateNavDisplay);
+      updateNavDisplay();
+
+      // Close nav on scroll (mobile only)
+      window.addEventListener('scroll', function() {
+        if (window.innerWidth <= 768 && nav.classList.contains('open')) {
+          nav.classList.remove('open');
+          hamburger.setAttribute('aria-expanded', 'false');
+          nav.style.display = 'none';
+        }
+      });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  <title>Sandram Admin Panel</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #111;
+      color: #fff;
+      display: flex;
+      height: 100vh;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 250px;
+      background: #222;
+      padding: 2rem 1rem;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .sidebar h2 {
+      margin: 0 0 1rem 0;
+      font-weight: bold;
+      font-size: 1.5rem;
+      border-bottom: 1px solid #444;
+      padding-bottom: 0.5rem;
+    }
+
+    .sidebar a {
+      color: #bbb;
+      text-decoration: none;
+      font-weight: bold;
+      padding: 0.5rem 0;
+      border-left: 4px solid transparent;
+      transition: border-color 0.3s;
+    }
+
+    .sidebar a:hover, .sidebar a.active {
+      border-left-color: #fff;
+      color: #fff;
+    }
+
+    /* Main content */
+    .main-content {
+      flex-grow: 1;
+      padding: 2rem;
+      background: #1a1a1a;
+      overflow-y: auto;
+    }
+
+    .main-content h1 {
+      margin-top: 0;
+      margin-bottom: 2rem;
+    }
+
+    /* Simple cards for stats or items */
+    .card {
+      background: #222;
+      padding: 1rem 1.5rem;
+      margin-bottom: 1.5rem;
+      border-radius: 6px;
+      box-shadow: 0 0 8px rgba(255, 255, 255, 0.05);
+    }
+
+    /* Table styles */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+    }
+
+    th, td {
+      border: 1px solid #333;
+      padding: 0.75rem;
+      text-align: left;
+    }
+
+    th {
+      background: #444;
+    }
+
+    /* Buttons */
+    button {
+      background: #444;
+      color: #fff;
+      border: none;
+      padding: 0.5rem 1rem;
+      cursor: pointer;
+      border-radius: 4px;
+      transition: background-color 0.3s ease;
+    }
+    button:hover {
+      background: #666;
+    }
+
+    /* Loading Overlay Styles */
+    .loading-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #111;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      transition: opacity 0.5s ease;
+    }
+
+    .loading-overlay.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .loading-spinner {
+      width: 60px;
+      height: 60px;
+      border: 4px solid #333;
+      border-top: 4px solid #fff;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-bottom: 20px;
+    }
+
+    .loading-text {
+      color: #fff;
+      font-size: 18px;
+      font-weight: bold;
+      text-align: center;
+      margin-bottom: 10px;
+    }
+
+    .loading-subtext {
+      color: #ccc;
+      font-size: 14px;
+      text-align: center;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Mobile Responsive Design */
+    @media screen and (max-width: 768px) {
+      body {
+        flex-direction: column;
+        height: auto;
+        min-height: 100vh;
+      }
+
+      .sidebar {
+        width: 100%;
+        height: auto;
+        padding: 1rem;
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        background: #222;
+        border-bottom: 1px solid #444;
+      }
+
+      .sidebar h2 {
+        font-size: 1.2rem;
+        margin-bottom: 0.5rem;
+      }
+
+      .sidebar a {
+        padding: 0.75rem 0;
+        font-size: 14px;
+        border-left: none;
+        border-bottom: 2px solid transparent;
+        transition: border-color 0.3s;
+      }
+
+      .sidebar a:hover, .sidebar a.active {
+        border-left-color: transparent;
+        border-bottom-color: #fff;
+        color: #fff;
+      }
+
+      .main-content {
+        flex-grow: 1;
+        padding: 1rem;
+        overflow-y: auto;
+        height: auto;
+      }
+
+      .main-content h1 {
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+      }
+
+      .card {
+        padding: 0.75rem 1rem;
+        margin-bottom: 1rem;
+      }
+
+      /* Mobile Navigation Toggle */
+      .mobile-nav-toggle {
+        display: block;
+        position: fixed;
+        top: 10px;
+        right: 10px;
+        z-index: 1001;
+        background: #444;
+        color: #fff;
+        border: none;
+        padding: 10px;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+
+      .sidebar.collapsed {
+        display: none;
+      }
+
+      .sidebar.expanded {
+        display: flex;
+      }
+    }
+
+    @media screen and (max-width: 480px) {
+      .sidebar {
+        padding: 0.5rem;
+      }
+
+      .sidebar h2 {
+        font-size: 1rem;
+      }
+
+      .sidebar a {
+        font-size: 12px;
+        padding: 0.5rem 0;
+      }
+
+      .main-content {
+        padding: 0.5rem;
+      }
+
+      .main-content h1 {
+        font-size: 1.2rem;
+      }
+
+      .card {
+        padding: 0.5rem 0.75rem;
+      }
+
+      button {
+        padding: 0.75rem;
+        font-size: 14px;
+      }
+    }
+
+    /* Hide mobile nav toggle on desktop */
+    .mobile-nav-toggle {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <!-- Loading Overlay -->
+  <div id="loadingOverlay" class="loading-overlay">
+    <div class="loading-spinner"></div>
+    <div class="loading-text">Loading Admin Panel</div>
+    <div class="loading-subtext">Checking authentication...</div>
+  </div>
+
+  <!-- Mobile Navigation Toggle -->
+  <button class="mobile-nav-toggle" id="mobileNavToggle">☰</button>
+
+  <nav class="sidebar" id="sidebar">
+    <h2>Admin Panel</h2>
+    <a href="#" class="active">Dashboard</a>
+    <a href="admin-upcomingevents.html">Manage Events</a>
+    <a href="admin-members.html">Manage Members</a>
+    <a href="cast.html">Cast</a>
+    <a href="slider.html">Slider</a>
+    <a href="bottomposter.html">bottom poster</a>
+     <a href="other.html">other</a>
+    <a href="competitions.html">Competitions</a>
+    <a href="#" id="logoutBtn">Logout</a>
+  </nav>
+
+  <main class="main-content">
+    <h1>Dashboard</h1>
+
+    <!-- Loading indicator -->
+    <div id="loadingIndicator" style="text-align: center; color: #ccc; margin: 20px 0;">
+      Loading dashboard data...
+    </div>
+
+    <!-- Stats Cards -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
+    <div class="card">
+      <h3>Total Events</h3>
+        <p id="totalEvents">-</p>
+    </div>
+    <div class="card">
+      <h3>Total Members</h3>
+        <p id="totalMembers">-</p>
+      </div>
+      <div class="card">
+        <h3>Cast Members</h3>
+        <p id="totalCast">-</p>
+      </div>
+      <div class="card">
+        <h3>Sliders</h3>
+        <p id="totalSliders">-</p>
+      </div>
+    </div>
+
+    <!-- Recent Events Section -->
+    <section>
+      <h3>Recent Events</h3>
+      <div id="eventsTable">
+      <table>
+        <thead>
+            <tr><th>Event Title</th><th>Subtitle</th><th>Time</th><th>Link</th></tr>
+        </thead>
+          <tbody id="eventsTableBody">
+            <tr><td colspan="4" style="text-align: center; color: #ccc;">Loading events...</td></tr>
+        </tbody>
+      </table>
+      </div>
+    </section>
+
+    <!-- Quick Actions -->
+    <section style="margin-top: 2rem;">
+      <h3>Quick Actions</h3>
+      <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+        <button onclick="window.location.href='admin-upcomingevents.html'" style="background: #28a745;">Add New Event</button>
+        <button onclick="window.location.href='admin-members.html'" style="background: #17a2b8;">Add New Member</button>
+        <button onclick="window.location.href='cast.html'" style="background: #ffc107; color: #000;">Manage Cast</button>
+        <button onclick="window.location.href='slider.html'" style="background: #6f42c1;">Manage Sliders</button>
+        <button onclick="window.location.href='bottomposter.html'" style="background: #fd7e14;">Manage Bottom Poster</button>
+        <button onclick="window.location.href='other.html'" style="background: #20c997;">Manage Other Content</button>
+        <button onclick="window.location.href='competitions.html'" style="background: #ffc107; color: #000;">Manage Competitions</button>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Firebase SDK -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyD4-bmCzFRmENSiquMfRkLmXY1gGL1ws_Q",
+      authDomain: "sandramfalla-5b850.firebaseapp.com",
+      projectId: "sandramfalla-5b850",
+      storageBucket: "sandramfalla-5b850.appspot.com",
+      messagingSenderId: "31296505457",
+      appId: "1:31296505457:web:cb1d887e21844ad9f5fdd0",
+      measurementId: "G-8CZYT0K63J"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
+
+    // Function to hide loading overlay
+    function hideLoadingOverlay() {
+      const loadingOverlay = document.getElementById('loadingOverlay');
+      if (loadingOverlay) {
+        loadingOverlay.classList.add('hidden');
+        setTimeout(() => {
+          loadingOverlay.style.display = 'none';
+        }, 500);
+      }
+    }
+
+    // Enhanced authentication check with back button prevention
+    onAuthStateChanged(auth, (user) => {
+      if (!user) {
+        // User is not logged in, redirect to login page
+        window.location.replace('login.html');
+        return;
+      } else {
+        // User is authenticated, hide loading overlay
+        hideLoadingOverlay();
+      }
+    });
+
+    // Logout functionality
+    document.getElementById('logoutBtn').addEventListener('click', async (e) => {
+      e.preventDefault();
+      
+      try {
+        await signOut(auth);
+        
+        // Clear browser history to prevent back button access
+        window.history.pushState(null, '', window.location.href);
+        window.history.pushState(null, '', window.location.href);
+        window.history.pushState(null, '', window.location.href);
+        
+        // Clear all cached data
+        if ('caches' in window) {
+          const cacheNames = await caches.keys();
+          await Promise.all(cacheNames.map(name => caches.delete(name)));
+        }
+        
+        // Clear localStorage and sessionStorage
+        localStorage.clear();
+        sessionStorage.clear();
+        
+        // Redirect to login page
+        window.location.replace('login.html');
+      } catch (error) {
+        console.error('Logout error:', error);
+        alert('Error logging out. Please try again.');
+      }
+    });
+
+    // Prevent back button access after logout
+    window.addEventListener('popstate', function(event) {
+      // Check if user is still authenticated
+      const currentUser = auth.currentUser;
+      if (!currentUser) {
+        // If not authenticated, redirect to login
+        window.location.replace('login.html');
+      }
+    });
+
+    // Add cache-busting headers
+    if (window.performance && window.performance.navigation.type === window.performance.navigation.TYPE_BACK_FORWARD) {
+      // User navigated using back/forward button
+      const currentUser = auth.currentUser;
+      if (!currentUser) {
+        window.location.replace('login.html');
+      }
+    }
+
+    // Load dashboard data
+    async function loadDashboardData() {
+      const loadingIndicator = document.getElementById('loadingIndicator');
+      
+      try {
+        // Load all data in parallel
+        const [eventsSnapshot, membersSnapshot, castSnapshot, slidersSnapshot] = await Promise.all([
+          getDocs(collection(db, "events")),
+          getDocs(collection(db, "members")),
+          getDocs(collection(db, "cast")),
+          getDocs(collection(db, "sliders"))
+        ]);
+
+        // Update stats
+        document.getElementById('totalEvents').textContent = eventsSnapshot.size;
+        document.getElementById('totalMembers').textContent = membersSnapshot.size;
+        document.getElementById('totalCast').textContent = castSnapshot.size;
+        document.getElementById('totalSliders').textContent = slidersSnapshot.size;
+
+        // Load recent events
+        loadRecentEvents(eventsSnapshot);
+
+        // Hide loading indicator
+        loadingIndicator.style.display = 'none';
+
+      } catch (error) {
+        console.error("Error loading dashboard data:", error);
+        loadingIndicator.textContent = "Error loading dashboard data. Please refresh the page.";
+        loadingIndicator.style.color = "#ff6b6b";
+      }
+    }
+
+    // Load recent events
+    function loadRecentEvents(eventsSnapshot) {
+      const eventsTableBody = document.getElementById('eventsTableBody');
+      
+      if (eventsSnapshot.empty) {
+        eventsTableBody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: #ccc;">No events found</td></tr>';
+        return;
+      }
+
+      let eventsHTML = '';
+      const events = [];
+      
+      eventsSnapshot.forEach((doc) => {
+        const data = doc.data();
+        events.push({
+          id: doc.id,
+          title: data.title || 'No Title',
+          subtitle: data.subtitle || 'No Subtitle',
+          time: data.time || 'No Time',
+          link: data.link || 'No Link'
+        });
+      });
+
+      // Sort events by time (most recent first) - simple sorting for now
+      events.sort((a, b) => new Date(b.time) - new Date(a.time));
+
+      // Display up to 5 recent events
+      const recentEvents = events.slice(0, 5);
+      
+      recentEvents.forEach(event => {
+        eventsHTML += `
+          <tr>
+            <td>${event.title}</td>
+            <td>${event.subtitle}</td>
+            <td>${event.time}</td>
+            <td>${event.link}</td>
+          </tr>
+        `;
+      });
+
+      eventsTableBody.innerHTML = eventsHTML;
+    }
+
+    // Mobile navigation toggle
+    const mobileNavToggle = document.getElementById('mobileNavToggle');
+    const sidebar = document.getElementById('sidebar');
+    
+    if (mobileNavToggle && sidebar) {
+      mobileNavToggle.addEventListener('click', () => {
+        sidebar.classList.toggle('collapsed');
+        sidebar.classList.toggle('expanded');
+      });
+    }
+
+    // Load dashboard when page loads
+    loadDashboardData();
+  </script>
+
+</body>
+</html>

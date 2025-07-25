@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  <title>Admin - Other Content</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #111;
+      color: #fff;
+      padding: 40px;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: bold;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 10px;
+      border: none;
+      border-radius: 6px;
+      background: #333;
+      color: #fff;
+      font-size: 14px;
+    }
+
+    textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+
+    input[type="file"] {
+      background: none;
+      padding: 0;
+      border: 2px dashed #555;
+      border-radius: 6px;
+      padding: 20px;
+      text-align: center;
+    }
+
+    button {
+      padding: 12px 20px;
+      border: none;
+      border-radius: 6px;
+      background: blue;
+      color: white;
+      cursor: pointer;
+      font-weight: bold;
+      margin-right: 10px;
+      position: relative;
+      transition: all 0.3s ease;
+    }
+
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    button.loading {
+      background: #6c757d;
+      color: #fff;
+    }
+
+    button.loading::after {
+      content: '';
+      position: absolute;
+      width: 16px;
+      height: 16px;
+      margin: auto;
+      border: 2px solid transparent;
+      border-top-color: #ffffff;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    @keyframes spin {
+      0% { transform: translateY(-50%) rotate(0deg); }
+      100% { transform: translateY(-50%) rotate(360deg); }
+    }
+
+    button:hover {
+      opacity: 0.8;
+    }
+
+    .message {
+      margin-top: 20px;
+      color: #0f0;
+      font-weight: bold;
+    }
+
+    .preview {
+      margin-top: 20px;
+      padding: 20px;
+      background: #333;
+      border-radius: 8px;
+      display: none;
+    }
+
+    .preview h3 {
+      margin-top: 0;
+      color: #fff;
+    }
+
+    .preview-content {
+      background: #222;
+      padding: 15px;
+      border-radius: 6px;
+      margin-top: 10px;
+    }
+
+    .preview-content h4 {
+      color: #fff;
+      margin-bottom: 10px;
+    }
+
+    .preview-content p {
+      color: #ccc;
+      line-height: 1.5;
+    }
+
+    .admin-controls {
+      margin-top: 50px;
+      border-top: 2px solid #444;
+      padding-top: 30px;
+    }
+
+    .admin-controls h2 {
+      margin-bottom: 20px;
+    }
+
+    .content-item {
+      background: #333;
+      margin: 10px 0;
+      padding: 20px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .content-info {
+      flex: 1;
+    }
+
+    .content-info h4 {
+      margin: 0 0 10px 0;
+      color: #fff;
+    }
+
+    .content-info p {
+      margin: 0;
+      color: #ccc;
+      max-width: 500px;
+      line-height: 1.4;
+    }
+
+    .button-group {
+      display: flex;
+      gap: 10px;
+    }
+
+    .edit-btn {
+      background-color: #28a745;
+    }
+
+    .delete-btn {
+      background-color: #dc3545;
+    }
+
+    .clear-btn {
+      background-color: #6c757d;
+    }
+
+    .preview-btn {
+      background-color: #17a2b8;
+    }
+
+    /* Loading overlay styles */
+    .loading-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #111;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      transition: opacity 0.5s ease;
+    }
+
+    .loading-overlay.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .loading-spinner {
+      width: 50px;
+      height: 50px;
+      border: 4px solid #333;
+      border-top: 4px solid #fff;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    .loading-text {
+      color: #fff;
+      margin-top: 20px;
+      font-size: 18px;
+      text-align: center;
+    }
+
+    /* Mobile Responsive Design */
+    @media screen and (max-width: 768px) {
+      body {
+        padding: 10px 5px;
+        margin: 0;
+        min-height: 100vh;
+        overflow-x: hidden;
+      }
+
+      h1 {
+        font-size: 20px;
+        margin-bottom: 15px;
+        text-align: center;
+      }
+
+      h2 {
+        font-size: 18px;
+        text-align: center;
+      }
+
+      .form-group {
+        margin-bottom: 15px;
+      }
+
+      textarea {
+        padding: 12px;
+        font-size: 16px; /* Prevents zoom on iOS */
+        min-height: 100px;
+        border-radius: 8px;
+      }
+
+      button {
+        width: 100%;
+        margin-bottom: 10px;
+        padding: 15px 20px;
+        font-size: 16px;
+        border-radius: 8px;
+      }
+
+      #preview {
+        margin-top: 20px;
+        padding: 15px;
+        border-radius: 8px;
+      }
+
+      .content-item {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        padding: 15px;
+        margin: 10px 0;
+        border-radius: 12px;
+      }
+
+      .content-actions {
+        flex-direction: column;
+        gap: 8px;
+        width: 100%;
+      }
+
+      .content-actions button {
+        width: 100%;
+        margin: 0;
+        padding: 12px;
+        font-size: 14px;
+      }
+
+      /* Better mobile spacing */
+      .form-group label {
+        font-size: 14px;
+        margin-bottom: 5px;
+      }
+
+      .message {
+        font-size: 14px;
+        text-align: center;
+        margin: 15px 0;
+      }
+    }
+
+    @media screen and (max-width: 480px) {
+      body {
+        padding: 8px 3px;
+        margin: 0;
+      }
+
+      h1 {
+        font-size: 18px;
+        margin-bottom: 10px;
+      }
+
+      h2 {
+        font-size: 16px;
+      }
+
+      textarea {
+        padding: 10px;
+        min-height: 80px;
+        font-size: 16px;
+      }
+
+      button {
+        padding: 12px 15px;
+        font-size: 14px;
+        margin-bottom: 8px;
+      }
+
+      .message {
+        font-size: 12px;
+        margin: 10px 0;
+      }
+
+      .form-group {
+        margin-bottom: 12px;
+      }
+
+      .form-group label {
+        font-size: 12px;
+        margin-bottom: 4px;
+      }
+
+      /* Compact content items */
+      .content-item {
+        margin: 8px 0;
+        padding: 10px;
+      }
+
+      .content-actions button {
+        padding: 10px;
+        font-size: 12px;
+      }
+    }
+
+    /* Tablet Responsive Design */
+    @media screen and (min-width: 769px) and (max-width: 1024px) {
+      body {
+        padding: 30px 20px;
+      }
+
+      .form-group {
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      button {
+        margin-right: 10px;
+        margin-bottom: 10px;
+      }
+    }
+
+    /* Enhanced Confirmation Dialog Styles */
+    .confirmation-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 10000;
+    }
+
+    .confirmation-dialog {
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      text-align: center;
+      max-width: 400px;
+      width: 90%;
+    }
+
+    .confirmation-dialog h3 {
+      margin: 0 0 15px 0;
+      color: #333;
+      font-size: 18px;
+    }
+
+    .confirmation-dialog p {
+      margin: 0 0 25px 0;
+      color: #666;
+      line-height: 1.5;
+    }
+
+    .confirmation-buttons {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+    }
+
+    .confirmation-btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: all 0.3s ease;
+    }
+
+    .confirmation-btn.yes {
+      background: #dc3545;
+      color: white;
+    }
+
+    .confirmation-btn.yes:hover {
+      background: #c82333;
+      transform: translateY(-2px);
+    }
+
+    .confirmation-btn.no {
+      background: #6c757d;
+      color: white;
+    }
+
+    .confirmation-btn.no:hover {
+      background: #5a6268;
+      transform: translateY(-2px);
+    }
+
+    /* Enhanced Success Message Styles */
+    .success-message {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: #28a745;
+      color: white;
+      padding: 15px 20px;
+      border-radius: 8px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      z-index: 10001;
+      display: none;
+      animation: slideInRight 0.3s ease;
+    }
+
+    .success-message.show {
+      display: block;
+    }
+
+    @keyframes slideInRight {
+      from {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    .success-message .success-icon {
+      margin-right: 10px;
+      font-size: 18px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Loading Overlay -->
+  <div id="loadingOverlay" class="loading-overlay">
+    <div class="loading-spinner"></div>
+    <div class="loading-text">Loading Admin Panel</div>
+    <div class="loading-subtext">Checking authentication...</div>
+  </div>
+
+  <!-- Confirmation Dialog -->
+  <div id="confirmationOverlay" class="confirmation-overlay">
+    <div class="confirmation-dialog">
+      <h3 id="confirmationTitle">Confirm Delete</h3>
+      <p id="confirmationMessage">Are you sure you want to delete this item?</p>
+      <div class="confirmation-buttons">
+        <button class="confirmation-btn yes" id="confirmYes">Yes, Delete</button>
+        <button class="confirmation-btn no" id="confirmNo">No, Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Success Message -->
+  <div id="successMessage" class="success-message">
+    <span class="success-icon">✅</span>
+    <span id="successText">Operation completed successfully!</span>
+  </div>
+
+  <h1>Manage Other Content</h1>
+  
+  <div>
+    <div class="form-group">
+      <label for="behindTheScenes">Behind The Scenes</label>
+      <textarea id="behindTheScenes" rows="6" placeholder="Enter behind-the-scenes content..."></textarea>
+    </div>
+     
+    <div class="form-group">
+      <label for="interview">Interview</label>
+      <textarea id="interview" rows="6" placeholder="Enter interview content..."></textarea>
+    </div>
+      
+    <div class="form-group">
+      <label for="analysis">Analysis</label>
+      <textarea id="analysis" rows="6" placeholder="Enter analysis content..."></textarea>
+    </div>
+
+    <button id="addContentBtn" onclick="addContent()">Add Content</button>
+    <button onclick="previewContent()" class="preview-btn">Preview</button>
+    <button onclick="clearForm()" class="clear-btn">Clear Form</button>
+    
+    <div class="message" id="message"></div>
+  </div>
+
+  <!-- Preview Section -->
+  <div id="preview" class="preview">
+    <h3>Content Preview</h3>
+    <div class="preview-content">
+      <h4>BEHIND THE SCENES</h4>
+      <p id="prevBehindTheScenes"></p>
+    </div>
+    <div class="preview-content">
+      <h4>INTERVIEW</h4>
+      <p id="prevInterview"></p>
+    </div>
+    <div class="preview-content">
+      <h4>ANALYSIS</h4>
+      <p id="prevAnalysis"></p>
+    </div>
+  </div>
+
+  <!-- Admin Controls Section -->
+  <div class="admin-controls">
+    <h2>Current Content</h2>
+    <button onclick="loadAllContent()" style="background-color: #ffc107; color: #000; margin-bottom: 20px;">Refresh Current Content</button>
+    
+    <div id="contentList" style="margin-top: 20px;">
+      <!-- Current content will be loaded here -->
+    </div>
+  </div>
+
+  <!-- Firebase SDK -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, updateDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyD4-bmCzFRmENSiquMfRkLmXY1gGL1ws_Q",
+      authDomain: "sandramfalla-5b850.firebaseapp.com",
+      projectId: "sandramfalla-5b850",
+      storageBucket: "sandramfalla-5b850.appspot.com",
+      messagingSenderId: "31296505457",
+      appId: "1:31296505457:web:cb1d887e21844ad9f5fdd0",
+      measurementId: "G-8CZYT0K63J"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
+
+    // Function to hide loading overlay
+    function hideLoadingOverlay() {
+      const loadingOverlay = document.getElementById('loadingOverlay');
+      if (loadingOverlay) {
+        loadingOverlay.classList.add('hidden');
+        setTimeout(() => {
+          loadingOverlay.style.display = 'none';
+        }, 500);
+      }
+    }
+
+    // Enhanced authentication check with back button prevention
+    onAuthStateChanged(auth, (user) => {
+      if (!user) {
+        // User is not logged in, redirect to login page
+        window.location.replace('login.html');
+        return;
+      } else {
+        // User is authenticated, hide loading overlay
+        hideLoadingOverlay();
+      }
+    });
+
+    // Prevent back button access after logout
+    window.addEventListener('popstate', function(event) {
+      const currentUser = auth.currentUser;
+      if (!currentUser) {
+        window.location.replace('login.html');
+      }
+    });
+
+    // Check for back/forward navigation
+    if (window.performance && window.performance.navigation.type === window.performance.navigation.TYPE_BACK_FORWARD) {
+      const currentUser = auth.currentUser;
+      if (!currentUser) {
+        window.location.replace('login.html');
+      }
+    }
+
+    // Load current content for admin management
+    window.loadAllContent = async function() {
+      const contentList = document.getElementById('contentList');
+      contentList.innerHTML = '<div style="text-align: center; color: #ccc;">Loading current content...</div>';
+
+      try {
+        const querySnapshot = await getDocs(collection(db, "otherContent"));
+        
+        if (querySnapshot.empty) {
+          contentList.innerHTML = '<div style="text-align: center; color: #ccc;">No content currently set</div>';
+          return;
+        }
+
+        // Get the first (and only) content
+        const doc = querySnapshot.docs[0];
+        const data = doc.data();
+        const contentId = doc.id;
+
+        const contentHTML = `
+          <div class="content-item">
+            <div class="content-info">
+              <h4>Current Other Content</h4>
+              <p><strong>Behind The Scenes:</strong> ${data.behindTheScenes ? data.behindTheScenes.substring(0, 150) + (data.behindTheScenes.length > 150 ? '...' : '') : 'Not set'}</p>
+              <p><strong>Interview:</strong> ${data.interview ? data.interview.substring(0, 150) + (data.interview.length > 150 ? '...' : '') : 'Not set'}</p>
+              <p><strong>Analysis:</strong> ${data.analysis ? data.analysis.substring(0, 150) + (data.analysis.length > 150 ? '...' : '') : 'Not set'}</p>
+            </div>
+            <div class="button-group">
+              <button onclick="editContent('${contentId}', '${data.behindTheScenes ? data.behindTheScenes.replace(/'/g, "\\'") : ''}', '${data.interview ? data.interview.replace(/'/g, "\\'") : ''}', '${data.analysis ? data.analysis.replace(/'/g, "\\'") : ''}')" class="edit-btn">Edit</button>
+              <button onclick="deleteContent('${contentId}')" class="delete-btn">Delete</button>
+            </div>
+          </div>
+        `;
+
+        contentList.innerHTML = contentHTML;
+      } catch (error) {
+        contentList.innerHTML = `<div style="text-align: center; color: red;">Error loading current content: ${error.message}</div>`;
+      }
+    };
+
+    // Edit content function
+    window.editContent = function(contentId, behindTheScenes, interview, analysis) {
+      document.getElementById('behindTheScenes').value = behindTheScenes;
+      document.getElementById('interview').value = interview;
+      document.getElementById('analysis').value = analysis;
+      
+      window.currentEditId = contentId;
+      
+      const addButton = document.getElementById('addContentBtn');
+      if (addButton) {
+        addButton.textContent = 'Update Content';
+        addButton.onclick = updateContent;
+        addButton.style.backgroundColor = '#ffc107';
+        addButton.style.color = '#000';
+      }
+      
+      document.getElementById('behindTheScenes').scrollIntoView({ behavior: 'smooth' });
+    };
+
+    // Update content function
+    window.updateContent = async function() {
+      const behindTheScenes = document.getElementById('behindTheScenes').value.trim();
+      const interview = document.getElementById('interview').value.trim();
+      const analysis = document.getElementById('analysis').value.trim();
+      const msg = document.getElementById('message');
+
+      msg.textContent = "";
+      msg.style.color = "#0f0";
+
+      if (!behindTheScenes && !interview && !analysis) {
+        msg.textContent = "❗ Please fill at least one field.";
+        msg.style.color = "red";
+        return;
+      }
+
+      try {
+        const contentRef = doc(db, "otherContent", window.currentEditId);
+        await updateDoc(contentRef, {
+          behindTheScenes,
+          interview,
+          analysis
+        });
+
+        msg.textContent = "✅ Content updated successfully!";
+        
+        document.querySelectorAll("textarea").forEach(i => i.value = "");
+        const addButton = document.getElementById('addContentBtn');
+        if (addButton) {
+          addButton.textContent = 'Add Content';
+          addButton.onclick = addContent;
+          addButton.style.backgroundColor = 'blue';
+          addButton.style.color = 'white';
+        }
+        
+        window.currentEditId = null;
+        
+        loadAllContent();
+      } catch (error) {
+        msg.textContent = "❌ Error: " + error.message;
+        msg.style.color = "red";
+      }
+    };
+
+    // Enhanced confirmation dialog function
+    function showConfirmationDialog(title, message, onConfirm) {
+      const overlay = document.getElementById('confirmationOverlay');
+      const titleEl = document.getElementById('confirmationTitle');
+      const messageEl = document.getElementById('confirmationMessage');
+      const yesBtn = document.getElementById('confirmYes');
+      const noBtn = document.getElementById('confirmNo');
+
+      titleEl.textContent = title;
+      messageEl.textContent = message;
+      overlay.style.display = 'flex';
+
+      // Handle Yes button click
+      const handleYes = () => {
+        overlay.style.display = 'none';
+        yesBtn.removeEventListener('click', handleYes);
+        noBtn.removeEventListener('click', handleNo);
+        onConfirm();
+      };
+
+      // Handle No button click
+      const handleNo = () => {
+        overlay.style.display = 'none';
+        yesBtn.removeEventListener('click', handleYes);
+        noBtn.removeEventListener('click', handleNo);
+      };
+
+      yesBtn.addEventListener('click', handleYes);
+      noBtn.addEventListener('click', handleNo);
+    }
+
+    // Enhanced success message function
+    function showSuccessMessage(message) {
+      const successEl = document.getElementById('successMessage');
+      const successText = document.getElementById('successText');
+      
+      successText.textContent = message;
+      successEl.classList.add('show');
+      
+      // Auto-hide after 3 seconds
+      setTimeout(() => {
+        successEl.classList.remove('show');
+      }, 3000);
+    }
+
+    // Delete content function
+    window.deleteContent = async function(contentId) {
+      showConfirmationDialog(
+        'Delete Content',
+        'Are you sure you want to delete the current content? This will remove it from the website.',
+        async () => {
+          try {
+            await deleteDoc(doc(db, "otherContent", contentId));
+            showSuccessMessage('✅ Current content deleted successfully!');
+            loadAllContent();
+          } catch (error) {
+            showSuccessMessage('❌ Error deleting content: ' + error.message);
+          }
+        }
+      );
+    };
+
+    // Clear form function
+    window.clearForm = function() {
+      document.querySelectorAll("textarea").forEach(i => i.value = "");
+      
+      const addButton = document.getElementById('addContentBtn');
+      if (addButton) {
+        addButton.textContent = 'Add Content';
+        addButton.onclick = addContent;
+        addButton.style.backgroundColor = 'blue';
+        addButton.style.color = 'white';
+      }
+      
+      window.currentEditId = null;
+      
+      const preview = document.getElementById('preview');
+      if (preview) {
+        preview.style.display = "none";
+      }
+      
+      const msg = document.getElementById('message');
+      if (msg) {
+        msg.textContent = "";
+      }
+    };
+
+    // Preview content function
+    window.previewContent = function () {
+      const behindTheScenes = document.getElementById('behindTheScenes').value.trim();
+      const interview = document.getElementById('interview').value.trim();
+      const analysis = document.getElementById('analysis').value.trim();
+
+      const preview = document.getElementById('preview');
+      const prevBehindTheScenes = document.getElementById('prevBehindTheScenes');
+      const prevInterview = document.getElementById('prevInterview');
+      const prevAnalysis = document.getElementById('prevAnalysis');
+      
+      if (!behindTheScenes && !interview && !analysis) {
+        alert("⚠️ Please fill at least one field to preview.");
+        return;
+      }
+
+      try {
+        prevBehindTheScenes.textContent = behindTheScenes || 'No content';
+        prevInterview.textContent = interview || 'No content';
+        prevAnalysis.textContent = analysis || 'No content';
+
+        preview.style.display = "block";
+      } catch (error) {
+        alert("Error showing preview: " + error.message);
+      }
+    };
+
+    // Add content function
+    window.addContent = async function () {
+      if (window.currentEditId) {
+        alert("⚠️ You're currently in edit mode. Please click 'Update Content' to save changes, or clear the form to add new content.");
+        return;
+      }
+
+      const behindTheScenes = document.getElementById('behindTheScenes').value.trim();
+      const interview = document.getElementById('interview').value.trim();
+      const analysis = document.getElementById('analysis').value.trim();
+      const msg = document.getElementById('message');
+      const addButton = document.getElementById('addContentBtn');
+
+      msg.textContent = "";
+      msg.style.color = "#0f0";
+
+      if (!behindTheScenes && !interview && !analysis) {
+        msg.textContent = "❗ Please fill at least one field.";
+        msg.style.color = "red";
+        return;
+      }
+
+      // Show loading state
+      if (addButton) {
+        addButton.disabled = true;
+        addButton.classList.add('loading');
+        addButton.textContent = 'Adding Content...';
+      }
+
+      const loadingOverlay = document.getElementById('loadingOverlay');
+      const loadingText = document.getElementById('loadingText');
+      
+      try {
+        // Show loading overlay
+        loadingOverlay.style.display = 'flex';
+        loadingText.textContent = 'Processing...';
+
+        // First, delete any existing content
+        const existingContent = await getDocs(collection(db, "otherContent"));
+        const deletePromises = existingContent.docs.map(doc => deleteDoc(doc.ref));
+        await Promise.all(deletePromises);
+
+        loadingText.textContent = 'Saving content...';
+
+        // Add new content
+        await addDoc(collection(db, "otherContent"), {
+          behindTheScenes,
+          interview,
+          analysis
+        });
+
+        loadingText.textContent = 'Content added successfully!';
+        
+        // Hide loading overlay after a short delay
+        setTimeout(() => {
+          loadingOverlay.style.display = 'none';
+        }, 1000);
+
+        msg.textContent = "✅ New content added successfully! (Old content deleted)";
+        document.querySelectorAll("textarea").forEach(i => i.value = "");
+        
+        loadAllContent();
+      } catch (error) {
+        loadingOverlay.style.display = 'none';
+        msg.textContent = "❌ Error: " + error.message;
+        msg.style.color = "red";
+      } finally {
+        // Reset button state
+        if (addButton) {
+          addButton.disabled = false;
+          addButton.classList.remove('loading');
+          addButton.textContent = 'Add Content';
+        }
+      }
+    };
+
+    // Load content when page loads
+    loadAllContent();
+  </script>
+</body>
+</html>

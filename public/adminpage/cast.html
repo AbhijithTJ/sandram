@@ -1,0 +1,1264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  <title>Admin - Cast</title>
+  <!-- Cropper.js CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #111;
+      color: #fff;
+      padding: 40px;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 10px;
+      border: none;
+      border-radius: 6px;
+      background: #333;
+      color: #fff;
+    }
+
+    input[type="file"] {
+      background: none;
+      padding: 0;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    button {
+      padding: 12px 20px;
+      border: none;
+      border-radius: 6px;
+      background: #28a745;
+      color: white;
+      cursor: pointer;
+      position: relative;
+      transition: all 0.3s ease;
+    }
+
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    button.loading {
+      background: #6c757d;
+      color: #fff;
+    }
+
+    button.loading::after {
+      content: '';
+      position: absolute;
+      width: 16px;
+      height: 16px;
+      margin: auto;
+      border: 2px solid transparent;
+      border-top-color: #ffffff;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    @keyframes spin {
+      0% { transform: translateY(-50%) rotate(0deg); }
+      100% { transform: translateY(-50%) rotate(360deg); }
+    }
+
+    .message {
+      margin-top: 20px;
+      color: #0f0;
+      font-weight: bold;
+    }
+
+    .loading-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #111;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      transition: opacity 0.5s ease;
+    }
+
+    .loading-overlay.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .loading-spinner {
+      width: 50px;
+      height: 50px;
+      border: 4px solid #333;
+      border-top: 4px solid #fff;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    .loading-text {
+      color: #fff;
+      margin-top: 20px;
+      font-size: 18px;
+      text-align: center;
+    }
+
+    /* Cropper Modal Styles */
+    .cropper-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.9);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 10002;
+    }
+
+    .cropper-container {
+      background: #222;
+      padding: 20px;
+      border-radius: 10px;
+      max-width: 90%;
+      max-height: 90%;
+      overflow: auto;
+    }
+
+    .cropper-container h3 {
+      margin: 0 0 20px 0;
+      text-align: center;
+      color: #fff;
+    }
+
+    .cropper-wrapper {
+      position: relative;
+      max-width: 100%;
+      max-height: 60vh;
+      overflow: hidden;
+      border-radius: 8px;
+      background: #333;
+    }
+
+    .cropper-image {
+      max-width: 100%;
+      max-height: 60vh;
+      display: block;
+    }
+
+    .cropper-buttons {
+      margin-top: 20px;
+      text-align: center;
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .cropper-btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: all 0.3s ease;
+    }
+
+    .cropper-btn.crop {
+      background: #28a745;
+      color: white;
+    }
+
+    .cropper-btn.cancel {
+      background: #6c757d;
+      color: white;
+    }
+
+    .cropper-btn:hover {
+      transform: translateY(-2px);
+    }
+
+    .image-preview {
+      margin-top: 10px;
+      text-align: center;
+    }
+
+    .image-preview img {
+      max-width: 200px;
+      max-height: 140px;
+      border-radius: 6px;
+      border: 2px solid #444;
+    }
+
+    /* Mobile Responsive Design */
+    @media screen and (max-width: 768px) {
+      body {
+        padding: 10px 5px;
+        margin: 0;
+        min-height: 100vh;
+        overflow-x: hidden;
+      }
+
+      h1 {
+        font-size: 20px;
+        margin-bottom: 15px;
+        text-align: center;
+      }
+
+      h2 {
+        font-size: 18px;
+        text-align: center;
+      }
+
+      .form-group {
+        margin-bottom: 15px;
+      }
+
+      input, textarea {
+        padding: 12px;
+        font-size: 16px; /* Prevents zoom on iOS */
+        border-radius: 8px;
+      }
+
+      button {
+        width: 100%;
+        margin-bottom: 10px;
+        padding: 15px 20px;
+        font-size: 16px;
+        border-radius: 8px;
+      }
+
+      #preview {
+        margin-top: 20px;
+        padding: 15px;
+        border-radius: 8px;
+      }
+
+      #preview img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 6px;
+      }
+
+      .cast-item {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        margin: 10px 0;
+        border-radius: 12px;
+      }
+
+      .cast-item img {
+        width: 100%;
+        max-width: 250px;
+        height: 180px;
+        border-radius: 8px;
+        margin-bottom: 10px;
+        object-fit: cover;
+      }
+
+      .cast-actions {
+        flex-direction: column;
+        gap: 8px;
+        width: 100%;
+      }
+
+      .cast-actions button {
+        width: 100%;
+        margin: 0;
+        padding: 12px;
+        font-size: 14px;
+      }
+
+      .cropper-container {
+        padding: 10px;
+        margin: 5px;
+        max-width: 95%;
+        max-height: 90vh;
+      }
+
+      .cropper-buttons {
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .cropper-btn {
+        width: 100%;
+        margin-bottom: 5px;
+        padding: 12px;
+        font-size: 14px;
+      }
+
+      /* Full screen mobile view */
+      .cropper-modal {
+        padding: 0;
+      }
+
+      .cropper-wrapper {
+        max-height: 70vh;
+      }
+
+      /* Better mobile spacing */
+      .form-group label {
+        font-size: 14px;
+        margin-bottom: 5px;
+      }
+
+      .message {
+        font-size: 14px;
+        text-align: center;
+        margin: 15px 0;
+      }
+
+      /* Mobile-friendly image preview */
+      .image-preview {
+        margin: 10px 0;
+      }
+
+      .image-preview img {
+        max-width: 100%;
+        max-height: 150px;
+        border-radius: 8px;
+      }
+    }
+
+    @media screen and (max-width: 480px) {
+      body {
+        padding: 8px 3px;
+        margin: 0;
+      }
+
+      h1 {
+        font-size: 18px;
+        margin-bottom: 10px;
+      }
+
+      h2 {
+        font-size: 16px;
+      }
+
+      input, textarea {
+        padding: 10px;
+        font-size: 16px;
+      }
+
+      button {
+        padding: 12px 15px;
+        font-size: 14px;
+        margin-bottom: 8px;
+      }
+
+      .message {
+        font-size: 12px;
+        margin: 10px 0;
+      }
+
+      .form-group {
+        margin-bottom: 12px;
+      }
+
+      .form-group label {
+        font-size: 12px;
+        margin-bottom: 4px;
+      }
+
+      /* Smaller image preview for very small screens */
+      .image-preview img {
+        max-height: 120px;
+      }
+
+      /* Compact cast items */
+      .cast-item {
+        margin: 8px 0;
+        padding: 10px;
+      }
+
+      .cast-item img {
+        max-width: 200px;
+        height: 140px;
+      }
+
+      /* Compact cropper */
+      .cropper-container {
+        padding: 8px;
+        margin: 3px;
+      }
+
+      .cropper-btn {
+        padding: 10px;
+        font-size: 12px;
+      }
+    }
+
+    /* Tablet Responsive Design */
+    @media screen and (min-width: 769px) and (max-width: 1024px) {
+      body {
+        padding: 30px 20px;
+      }
+
+      .form-group {
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      button {
+        margin-right: 10px;
+        margin-bottom: 10px;
+      }
+    }
+
+    /* Cast display styles */
+    .cast-item {
+      display: flex;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+      margin-bottom: 24px;
+      overflow: hidden;
+    }
+
+    .cast-item img {
+      width: 200px;
+      height: 140px;
+      object-fit: cover;
+      object-position: center;
+      flex-shrink: 0;
+      border-radius: 8px 0 0 8px;
+    }
+
+    .cast-info {
+      flex: 1;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      color: #111;
+    }
+
+    .cast-name {
+      font-weight: bold;
+      font-size: 16px;
+      margin-bottom: 6px;
+    }
+
+    .cast-character {
+      color: #777;
+      font-size: 14px;
+      margin-bottom: 4px;
+    }
+
+    @media screen and (max-width: 600px) {
+      .cast-item {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .cast-item img {
+        width: 100%;
+        height: 200px;
+        border-radius: 8px 8px 0 0;
+      }
+    }
+
+    /* Enhanced Confirmation Dialog Styles */
+    .confirmation-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 10000;
+    }
+
+    .confirmation-dialog {
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      text-align: center;
+      max-width: 400px;
+      width: 90%;
+    }
+
+    .confirmation-dialog h3 {
+      margin: 0 0 15px 0;
+      color: #333;
+      font-size: 18px;
+    }
+
+    .confirmation-dialog p {
+      margin: 0 0 25px 0;
+      color: #666;
+      line-height: 1.5;
+    }
+
+    .confirmation-buttons {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+    }
+
+    .confirmation-btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: all 0.3s ease;
+    }
+
+    .confirmation-btn.yes {
+      background: #dc3545;
+      color: white;
+    }
+
+    .confirmation-btn.yes:hover {
+      background: #c82333;
+      transform: translateY(-2px);
+    }
+
+    .confirmation-btn.no {
+      background: #6c757d;
+      color: white;
+    }
+
+    .confirmation-btn.no:hover {
+      background: #5a6268;
+      transform: translateY(-2px);
+    }
+
+    /* Enhanced Success Message Styles */
+    .success-message {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: #28a745;
+      color: white;
+      padding: 15px 20px;
+      border-radius: 8px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      z-index: 10001;
+      display: none;
+      animation: slideInRight 0.3s ease;
+    }
+
+    .success-message.show {
+      display: block;
+    }
+
+    @keyframes slideInRight {
+      from {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    .success-message .success-icon {
+      margin-right: 10px;
+      font-size: 18px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Loading Overlay -->
+  <div id="loadingOverlay" class="loading-overlay">
+    <div class="loading-spinner"></div>
+    <div id="loadingText" class="loading-text">Loading Admin Panel</div>
+    <div class="loading-subtext">Checking authentication...</div>
+  </div>
+
+  <!-- Cropper Modal -->
+  <div id="cropperModal" class="cropper-modal">
+    <div class="cropper-container">
+      <h3>Crop Image</h3>
+      <div class="cropper-wrapper">
+        <img id="cropperImage" class="cropper-image" src="" alt="Crop this image">
+      </div>
+      <div class="cropper-buttons">
+        <button class="cropper-btn crop" id="cropBtn">Crop & Save</button>
+        <button class="cropper-btn cancel" id="cancelCropBtn">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Confirmation Dialog -->
+  <div id="confirmationOverlay" class="confirmation-overlay">
+    <div class="confirmation-dialog">
+      <h3 id="confirmationTitle">Confirm Delete</h3>
+      <p id="confirmationMessage">Are you sure you want to delete this item?</p>
+      <div class="confirmation-buttons">
+        <button class="confirmation-btn yes" id="confirmYes">Yes, Delete</button>
+        <button class="confirmation-btn no" id="confirmNo">No, Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Success Message -->
+  <div id="successMessage" class="success-message">
+    <span class="success-icon">✅</span>
+    <span id="successText">Operation completed successfully!</span>
+  </div>
+
+  <h1>Add Cast Member</h1>
+  <div>
+    <div class="form-group">
+      <label for="fullName">Full Name</label>
+      <input type="text" id="fullName" placeholder="Enter full name...">
+    </div>
+
+    <div class="form-group">
+      <label for="imageFile">Upload Image</label>
+      <input type="file" id="imageFile" accept="image/*">
+      <div class="image-preview" id="imagePreview" style="display: none;">
+        <img id="previewImage" src="" alt="Preview">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="characterName">Character Name</label>
+      <input type="text" id="characterName" placeholder="Enter character name...">
+    </div>
+
+    <button onclick="previewCast()" style="background-color: #17a2b8; color: white; padding: 10px 15px; border: none; border-radius: 6px; cursor: pointer; margin-right: 10px;">Preview Cast</button>
+    <button onclick="clearForm()" style="background-color: #6c757d; color: white; padding: 10px 15px; border: none; border-radius: 6px; cursor: pointer; margin-right: 10px;">Clear Form</button>
+    <br></br>
+
+    <button id="addCastBtn" onclick="addCast()" style="background-color: blue; color:white;">Add Cast</button>
+    <div class="message" id="message"></div>
+
+    <!-- Preview Area -->
+    <div id="preview" style="margin-top:30px; padding:20px; border:1px solid #444; border-radius:8px; background:#222; display:none;">
+      <h2 style="margin-bottom:10px;">Cast Preview</h2>
+      <p><strong>Name:</strong> <span id="prevName"></span></p>
+      <p><strong>Character:</strong> <span id="prevCharacter"></span></p>
+      <div>
+        <strong>Image:</strong><br/>
+        <img id="prevImage" style="max-width:300px; max-height:200px; width:auto; height:auto; margin-top:10px; border-radius:6px; object-fit:cover;" />
+      </div>
+    </div>
+  </div>
+
+  <!-- Admin Controls Section -->
+  <div style="margin-top: 50px; border-top: 2px solid #444; padding-top: 30px;">
+    <h2>Current Cast</h2>
+    <button onclick="loadAllCast()" style="background-color: #ffc107; color: #000; margin-bottom: 20px;">Refresh Cast</button>
+    
+    <div id="castList" style="margin-top: 20px;">
+      <!-- Current cast will be loaded here -->
+    </div>
+  </div>
+
+  <!-- Firebase SDK -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getFirestore, collection, addDoc, getDocs, updateDoc, deleteDoc, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyD4-bmCzFRmENSiquMfRkLmXY1gGL1ws_Q",
+      authDomain:"sandramfalla-5b850.firebaseapp.com",
+      projectId:"sandramfalla-5b850",
+      storageBucket: "sandramfalla-5b850.appspot.com",
+      messagingSenderId:"31296505457",
+      appId: "1:31296505457:web:cb1d887e21844ad9f5fdd0",
+      measurementId: "G-8CZYT0K63J"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
+
+    // Global variables for cropping
+    let cropper = null;
+    let currentImageFile = null;
+
+    // Function to hide loading overlay
+    function hideLoadingOverlay() {
+      const loadingOverlay = document.getElementById('loadingOverlay');
+      if (loadingOverlay) {
+        loadingOverlay.classList.add('hidden');
+        setTimeout(() => {
+          loadingOverlay.style.display = 'none';
+        }, 500);
+      }
+    }
+
+    // Enhanced authentication check with back button prevention
+    onAuthStateChanged(auth, (user) => {
+      if (!user) {
+        // User is not logged in, redirect to login page
+        window.location.replace('login.html');
+        return;
+      } else {
+        // User is authenticated, hide loading overlay
+        hideLoadingOverlay();
+      }
+    });
+
+    // Prevent back button access after logout
+    window.addEventListener('popstate', function(event) {
+      const currentUser = auth.currentUser;
+      if (!currentUser) {
+        window.location.replace('login.html');
+      }
+    });
+
+    // Check for back/forward navigation
+    if (window.performance && window.performance.navigation.type === window.performance.navigation.TYPE_BACK_FORWARD) {
+      const currentUser = auth.currentUser;
+      if (!currentUser) {
+        window.location.replace('login.html');
+      }
+    }
+
+    // Cloudinary configuration
+    const cloudName = 'dd7kyehrl';
+    const uploadPreset = 'event-uploads';
+
+    // Image cropping functionality
+    function initializeCropper(imageElement) {
+      if (cropper) {
+        cropper.destroy();
+      }
+      
+      cropper = new Cropper(imageElement, {
+        aspectRatio: 10/7, // 200x140 aspect ratio
+        viewMode: 2,
+        dragMode: 'move',
+        autoCropArea: 1,
+        restore: false,
+        guides: true,
+        center: true,
+        highlight: false,
+        cropBoxMovable: true,
+        cropBoxResizable: true,
+        toggleDragModeOnDblclick: false,
+      });
+    }
+
+    function showCropperModal(imageFile) {
+      const modal = document.getElementById('cropperModal');
+      const image = document.getElementById('cropperImage');
+      const reader = new FileReader();
+      
+      reader.onload = function(e) {
+        image.src = e.target.result;
+        modal.style.display = 'flex';
+        
+        // Initialize cropper after image loads
+        image.onload = function() {
+          initializeCropper(image);
+        };
+      };
+      
+      reader.readAsDataURL(imageFile);
+    }
+
+    function hideCropperModal() {
+      const modal = document.getElementById('cropperModal');
+      modal.style.display = 'none';
+      if (cropper) {
+        cropper.destroy();
+        cropper = null;
+      }
+    }
+
+    function getCroppedImage() {
+      return new Promise((resolve) => {
+        if (!cropper) {
+          resolve(null);
+          return;
+        }
+        
+        const canvas = cropper.getCroppedCanvas({
+          width: 400,  // 2x the display size for high quality
+          height: 280,
+          imageSmoothingEnabled: true,
+          imageSmoothingQuality: 'high',
+        });
+        
+        canvas.toBlob((blob) => {
+          resolve(blob);
+        }, 'image/jpeg', 0.9);
+      });
+    }
+
+    // Handle file input change
+    document.getElementById('imageFile').addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      if (file) {
+        currentImageFile = file;
+        showCropperModal(file);
+      }
+    });
+
+    // Handle crop button
+    document.getElementById('cropBtn').addEventListener('click', async function() {
+      const croppedBlob = await getCroppedImage();
+      if (croppedBlob) {
+        // Create a new file from the cropped blob
+        currentImageFile = new File([croppedBlob], 'cropped-image.jpg', { type: 'image/jpeg' });
+        
+        // Show preview
+        const preview = document.getElementById('imagePreview');
+        const previewImg = document.getElementById('previewImage');
+        const reader = new FileReader();
+        
+        reader.onload = function(e) {
+          previewImg.src = e.target.result;
+          preview.style.display = 'block';
+        };
+        
+        reader.readAsDataURL(croppedBlob);
+        hideCropperModal();
+      }
+    });
+
+    // Handle cancel crop button
+    document.getElementById('cancelCropBtn').addEventListener('click', function() {
+      hideCropperModal();
+      document.getElementById('imageFile').value = '';
+      currentImageFile = null;
+    });
+
+    // Load current cast for admin management
+    window.loadAllCast = async function() {
+      const castList = document.getElementById('castList');
+      castList.innerHTML = '<div style="text-align: center; color: #ccc;">Loading cast...</div>';
+
+      try {
+        const querySnapshot = await getDocs(collection(db, "cast"));
+        
+        if (querySnapshot.empty) {
+          castList.innerHTML = '<div style="text-align: center; color: #ccc;">No cast members found</div>';
+          return;
+        }
+
+        let castHTML = '';
+        querySnapshot.forEach((doc) => {
+          const data = doc.data();
+          const castId = doc.id;
+
+          castHTML += `
+            <div style="background: #333; margin: 10px 0; padding: 20px; border-radius: 8px; display: flex; align-items: center; gap: 20px;">
+              <img src="${data.image}" alt="${data.fullName}" style="width: 80px; height: 60px; object-fit: cover; border-radius: 4px;">
+              <div style="flex: 1;">
+                <h3 style="margin: 0 0 5px 0; color: #fff;">${data.fullName}</h3>
+                <p style="margin: 0; color: #ccc;">${data.characterName}</p>
+              </div>
+              <div style="display: flex; gap: 10px;">
+                <button onclick="editCast('${castId}', '${data.fullName}', '${data.characterName}', '${data.image}')" style="background-color: #28a745; color: white; padding: 8px 12px; border: none; border-radius: 4px; cursor: pointer;">Edit</button>
+                <button onclick="deleteCast('${castId}')" style="background-color: #dc3545; color: white; padding: 8px 12px; border: none; border-radius: 4px; cursor: pointer;">Delete</button>
+              </div>
+            </div>
+          `;
+        });
+
+        castList.innerHTML = castHTML;
+      } catch (error) {
+        castList.innerHTML = `<div style="text-align: center; color: red;">Error loading cast: ${error.message}</div>`;
+      }
+    };
+
+    // Edit cast function
+    window.editCast = function(castId, fullName, characterName, imageUrl) {
+      document.getElementById('fullName').value = fullName;
+      document.getElementById('characterName').value = characterName;
+      
+      window.currentEditId = castId;
+      window.currentImageUrl = imageUrl;
+      
+      const addButton = document.getElementById('addCastBtn');
+      if (addButton) {
+        addButton.textContent = 'Update Cast';
+        addButton.onclick = updateCast;
+        addButton.style.backgroundColor = '#ffc107';
+        addButton.style.color = '#000';
+      }
+      
+      document.getElementById('fullName').scrollIntoView({ behavior: 'smooth' });
+    };
+
+    // Update cast function
+    window.updateCast = async function() {
+      const fullName = document.getElementById('fullName').value.trim();
+      const characterName = document.getElementById('characterName').value.trim();
+      const imageFile = currentImageFile;
+      const msg = document.getElementById('message');
+      const addButton = document.getElementById('addCastBtn');
+
+      msg.textContent = "";
+      msg.style.color = "#0f0";
+
+      if (!fullName || !characterName) {
+        msg.textContent = "❗ Please fill all required fields.";
+        msg.style.color = "red";
+        return;
+      }
+
+      // Show loading state
+      if (addButton) {
+        addButton.disabled = true;
+        addButton.classList.add('loading');
+        addButton.textContent = 'Updating Cast...';
+      }
+
+      const loadingOverlay = document.getElementById('loadingOverlay');
+      const loadingText = document.getElementById('loadingText');
+      
+      try {
+        // Show loading overlay
+        if (loadingOverlay) loadingOverlay.style.display = 'flex';
+        if (loadingText) loadingText.textContent = 'Processing update...';
+
+        let imageURL = window.currentImageUrl;
+
+        if (imageFile) {
+          if (loadingText) loadingText.textContent = 'Uploading new image...';
+          const formData = new FormData();
+          formData.append('file', imageFile);
+          formData.append('upload_preset', uploadPreset);
+
+          const uploadResponse = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
+            method: 'POST',
+            body: formData
+          });
+
+          if (!uploadResponse.ok) {
+            throw new Error('Failed to upload image to Cloudinary');
+          }
+
+          const uploadResult = await uploadResponse.json();
+          imageURL = uploadResult.secure_url;
+        }
+
+        if (loadingText) loadingText.textContent = 'Saving changes...';
+
+        const castRef = doc(db, "cast", window.currentEditId);
+        await updateDoc(castRef, {
+          fullName,
+          characterName,
+          image: imageURL
+        });
+
+        if (loadingText) loadingText.textContent = 'Cast updated successfully!';
+        
+        // Hide loading overlay after a short delay
+        setTimeout(() => {
+          if (loadingOverlay) loadingOverlay.style.display = 'none';
+        }, 1000);
+
+        msg.textContent = "✅ Cast updated successfully!";
+        
+        document.querySelectorAll("input, textarea").forEach(i => i.value = "");
+        if (addButton) {
+          addButton.textContent = 'Add Cast';
+          addButton.onclick = addCast;
+          addButton.style.backgroundColor = 'blue';
+          addButton.style.color = 'white';
+        }
+        
+        window.currentEditId = null;
+        window.currentImageUrl = null;
+        currentImageFile = null;
+        
+        // Clear image preview
+        const imagePreview = document.getElementById('imagePreview');
+        if (imagePreview) {
+          imagePreview.style.display = "none";
+        }
+        
+        loadAllCast();
+      } catch (error) {
+        if (loadingOverlay) loadingOverlay.style.display = 'none';
+        msg.textContent = "❌ Error: " + error.message;
+        msg.style.color = "red";
+      } finally {
+        // Reset button state
+        if (addButton) {
+          addButton.disabled = false;
+          addButton.classList.remove('loading');
+          addButton.textContent = 'Update Cast';
+        }
+      }
+    };
+
+    // Enhanced confirmation dialog function
+    function showConfirmationDialog(title, message, onConfirm) {
+      const overlay = document.getElementById('confirmationOverlay');
+      const titleEl = document.getElementById('confirmationTitle');
+      const messageEl = document.getElementById('confirmationMessage');
+      const yesBtn = document.getElementById('confirmYes');
+      const noBtn = document.getElementById('confirmNo');
+
+      titleEl.textContent = title;
+      messageEl.textContent = message;
+      overlay.style.display = 'flex';
+
+      // Handle Yes button click
+      const handleYes = () => {
+        overlay.style.display = 'none';
+        yesBtn.removeEventListener('click', handleYes);
+        noBtn.removeEventListener('click', handleNo);
+        onConfirm();
+      };
+
+      // Handle No button click
+      const handleNo = () => {
+        overlay.style.display = 'none';
+        yesBtn.removeEventListener('click', handleYes);
+        noBtn.removeEventListener('click', handleNo);
+      };
+
+      yesBtn.addEventListener('click', handleYes);
+      noBtn.addEventListener('click', handleNo);
+    }
+
+    // Enhanced success message function
+    function showSuccessMessage(message) {
+      const successEl = document.getElementById('successMessage');
+      const successText = document.getElementById('successText');
+      
+      successText.textContent = message;
+      successEl.classList.add('show');
+      
+      // Auto-hide after 3 seconds
+      setTimeout(() => {
+        successEl.classList.remove('show');
+      }, 3000);
+    }
+
+    // Delete cast function
+    window.deleteCast = async function(castId) {
+      showConfirmationDialog(
+        'Delete Cast Member',
+        'Are you sure you want to delete this cast member? This action cannot be undone.',
+        async () => {
+          try {
+            await deleteDoc(doc(db, "cast", castId));
+            showSuccessMessage('✅ Cast member deleted successfully!');
+            loadAllCast();
+          } catch (error) {
+            showSuccessMessage('❌ Error deleting cast member: ' + error.message);
+          }
+        }
+      );
+    };
+
+    // Clear form function
+    window.clearForm = function() {
+      document.querySelectorAll("input, textarea").forEach(i => i.value = "");
+      
+      const addButton = document.getElementById('addCastBtn');
+      if (addButton) {
+        addButton.textContent = 'Add Cast';
+        addButton.onclick = addCast;
+        addButton.style.backgroundColor = 'blue';
+        addButton.style.color = 'white';
+      }
+      
+      window.currentEditId = null;
+      window.currentImageUrl = null;
+      currentImageFile = null;
+      
+      const preview = document.getElementById('preview');
+      if (preview) {
+        preview.style.display = "none";
+      }
+      
+      const imagePreview = document.getElementById('imagePreview');
+      if (imagePreview) {
+        imagePreview.style.display = "none";
+      }
+      
+      const msg = document.getElementById('message');
+      if (msg) {
+        msg.textContent = "";
+      }
+    };
+
+    // Preview cast function
+    window.previewCast = function () {
+      const fullName = document.getElementById('fullName').value.trim();
+      const characterName = document.getElementById('characterName').value.trim();
+      const imageFile = currentImageFile;
+
+      const preview = document.getElementById('preview');
+      const prevName = document.getElementById('prevName');
+      const prevCharacter = document.getElementById('prevCharacter');
+      const prevImage = document.getElementById('prevImage');
+
+      const isEditMode = window.currentImageUrl && !imageFile;
+      
+      if (!fullName || !characterName) {
+        alert("⚠️ Please fill all required fields.");
+        return;
+      }
+
+      if (!isEditMode && !imageFile) {
+        alert("⚠️ Please choose an image to preview.");
+        return;
+      }
+
+      try {
+        prevName.textContent = fullName;
+        prevCharacter.textContent = characterName;
+        
+        if (imageFile) {
+          const reader = new FileReader();
+          reader.onload = function(e) {
+            prevImage.src = e.target.result;
+          };
+          reader.readAsDataURL(imageFile);
+        } else if (window.currentImageUrl) {
+          prevImage.src = window.currentImageUrl;
+        }
+
+        preview.style.display = "block";
+      } catch (error) {
+        alert("Error showing preview: " + error.message);
+      }
+    };
+
+    window.addCast = async function () {
+      if (window.currentEditId) {
+        alert("⚠️ You're currently in edit mode. Please click 'Update Cast' to save changes, or clear the form to add a new cast member.");
+        return;
+      }
+
+      const fullName = document.getElementById('fullName').value.trim();
+      const characterName = document.getElementById('characterName').value.trim();
+      const imageFile = currentImageFile;
+      const msg = document.getElementById('message');
+      const addButton = document.getElementById('addCastBtn');
+
+      msg.textContent = "";
+      msg.style.color = "#0f0";
+
+      if (!fullName || !characterName || !imageFile) {
+        msg.textContent = "❗ Please fill all fields and upload an image.";
+        msg.style.color = "red";
+        return;
+      }
+
+      // Show loading state
+      if (addButton) {
+        addButton.disabled = true;
+        addButton.classList.add('loading');
+        addButton.textContent = 'Adding Cast...';
+      }
+
+      const loadingOverlay = document.getElementById('loadingOverlay');
+      const loadingText = document.getElementById('loadingText');
+      
+      try {
+        // Show loading overlay
+        if (loadingOverlay) loadingOverlay.style.display = 'flex';
+        if (loadingText) loadingText.textContent = 'Uploading image...';
+
+        const formData = new FormData();
+        formData.append('file', imageFile);
+        formData.append('upload_preset', uploadPreset);
+
+        const uploadResponse = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
+          method: 'POST',
+          body: formData
+        });
+
+        if (!uploadResponse.ok) {
+          throw new Error('Failed to upload image to Cloudinary');
+        }
+
+        if (loadingText) loadingText.textContent = 'Saving cast...';
+
+        const uploadResult = await uploadResponse.json();
+        const imageURL = uploadResult.secure_url;
+
+        await addDoc(collection(db, "cast"), {
+          fullName,
+          characterName,
+          image: imageURL
+        });
+
+        if (loadingText) loadingText.textContent = 'Cast added successfully!';
+        
+        // Hide loading overlay after a short delay
+        setTimeout(() => {
+          if (loadingOverlay) loadingOverlay.style.display = 'none';
+        }, 1000);
+
+        msg.textContent = "✅ Cast added successfully!";
+        document.querySelectorAll("input, textarea").forEach(i => i.value = "");
+        
+        // Clear image preview
+        const imagePreview = document.getElementById('imagePreview');
+        if (imagePreview) {
+          imagePreview.style.display = "none";
+        }
+        
+        currentImageFile = null;
+        
+        loadAllCast();
+      } catch (error) {
+        if (loadingOverlay) loadingOverlay.style.display = 'none';
+        msg.textContent = "❌ Error: " + error.message;
+        msg.style.color = "red";
+      } finally {
+        // Reset button state
+        if (addButton) {
+          addButton.disabled = false;
+          addButton.classList.remove('loading');
+          addButton.textContent = 'Add Cast';
+        }
+      }
+    };
+
+    // Load cast when page loads
+    loadAllCast();
+
+  </script>
+  <!-- Cropper.js JavaScript -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,2175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  <title>Admin - Competitions</title>
+  <!-- Cropper.js CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: #111;
+      color: #fff;
+      min-height: 100vh;
+    }
+
+    /* Loading Overlay Styles */
+    .loading-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.9);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      transition: opacity 0.5s ease;
+    }
+
+    .loading-spinner {
+      width: 60px;
+      height: 60px;
+      border: 4px solid #333;
+      border-top: 4px solid #fff;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-bottom: 20px;
+    }
+
+    .loading-text {
+      color: #fff;
+      font-size: 18px;
+      font-weight: bold;
+      text-align: center;
+    }
+
+    .loading-subtext {
+      color: #ccc;
+      font-size: 14px;
+      margin-top: 10px;
+      text-align: center;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .fade-out {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+      padding-bottom: 20px;
+      border-bottom: 2px solid #333;
+    }
+
+    .header h1 {
+      font-size: 2rem;
+      color: #fff;
+    }
+
+    .back-btn {
+      background: #333;
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.3s ease;
+    }
+
+    .back-btn:hover {
+      background: #555;
+    }
+
+    .form-section {
+      background: #222;
+      padding: 30px;
+      border-radius: 10px;
+      margin-bottom: 30px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    .form-section h2 {
+      margin-bottom: 20px;
+      color: #fff;
+      font-size: 1.5rem;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+      color: #fff;
+      font-weight: bold;
+    }
+
+    .form-group input,
+    .form-group textarea {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #444;
+      border-radius: 5px;
+      background: #333;
+      color: #fff;
+      font-size: 14px;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: #007bff;
+    }
+
+    .form-group textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    .submit-btn {
+      background: linear-gradient(135deg, #007bff, #0056b3);
+      color: white;
+      border: none;
+      padding: 15px 30px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: bold;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .submit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0, 123, 255, 0.3);
+    }
+
+    .submit-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .submit-btn.loading::after {
+      content: '';
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      margin: auto;
+      border: 2px solid transparent;
+      border-top-color: #ffffff;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      right: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    .message {
+      margin-top: 15px;
+      padding: 12px;
+      border-radius: 5px;
+      text-align: center;
+      font-weight: bold;
+    }
+
+    .message.success {
+      background: rgba(40, 167, 69, 0.2);
+      color: #51cf66;
+      border: 1px solid rgba(40, 167, 69, 0.3);
+    }
+
+    .message.error {
+      background: rgba(220, 53, 69, 0.2);
+      color: #ff6b6b;
+      border: 1px solid rgba(220, 53, 69, 0.3);
+    }
+
+    .competitions-list {
+      background: #222;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    .competitions-list h2 {
+      margin-bottom: 20px;
+      color: #fff;
+      font-size: 1.5rem;
+    }
+
+    .competition-item {
+      background: #333;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 15px;
+      border-left: 4px solid #ffc107;
+    }
+
+    .competition-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .competition-name {
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: #fff;
+    }
+
+    .delete-btn {
+      background: #dc3545;
+      color: white;
+      border: none;
+      padding: 8px 15px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 12px;
+      transition: background 0.3s ease;
+    }
+
+    .delete-btn:hover {
+      background: #c82333;
+    }
+
+    .competition-details {
+      color: #ccc;
+      line-height: 1.6;
+    }
+
+    .winner-info {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+      margin: 10px 0;
+    }
+
+    .winner-card {
+      background: #444;
+      padding: 10px;
+      border-radius: 5px;
+    }
+
+    .winner-title {
+      font-weight: bold;
+      color: #ffc107;
+      margin-bottom: 5px;
+    }
+
+    .winner-name {
+      color: #fff;
+      font-weight: bold;
+    }
+
+    .winner-prize {
+      color: #28a745;
+      font-weight: bold;
+    }
+
+    .winner-item {
+      margin: 10px 0;
+      padding: 10px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 5px;
+      text-align: center;
+    }
+
+    .announcement-date {
+      color: #999;
+      font-size: 0.9rem;
+      margin-top: 10px;
+    }
+
+    .winners-section {
+      background: rgba(255, 255, 255, 0.05);
+      padding: 20px;
+      border-radius: 8px;
+      margin: 20px 0;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .winner-entry {
+      background: rgba(255, 255, 255, 0.03);
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 15px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      position: relative;
+    }
+
+    .winner-entry:last-child {
+      margin-bottom: 0;
+    }
+
+    .remove-winner-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: #dc3545;
+      color: white;
+      border: none;
+      width: 25px;
+      height: 25px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .remove-winner-btn:hover {
+      background: #c82333;
+    }
+
+    .winner-entry:first-child .remove-winner-btn {
+      display: none;
+    }
+
+    .competition-photo-preview {
+      max-width: 200px;
+      max-height: 150px;
+      margin-top: 10px;
+      border-radius: 5px;
+      display: none;
+    }
+
+    .winner-photo-preview {
+      max-width: 100px;
+      max-height: 100px;
+      margin-top: 10px;
+      border-radius: 5px;
+      display: none;
+    }
+
+    .add-winner-btn {
+      background: #28a745;
+      color: white;
+      border: none;
+      padding: 8px 15px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 12px;
+      margin-top: 10px;
+      transition: background 0.3s ease;
+    }
+
+    .add-winner-btn:hover {
+      background: #218838;
+    }
+
+    /* Loading Overlay */
+    .loading-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+
+    .loading-content {
+      background: #333;
+      padding: 30px;
+      border-radius: 10px;
+      text-align: center;
+      color: white;
+    }
+
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 4px solid #444;
+      border-top: 4px solid #ffc107;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 15px;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Modal Styles */
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 10000;
+    }
+
+    .modal-content {
+      background: #222;
+      border-radius: 10px;
+      width: 90%;
+      max-width: 800px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px;
+      border-bottom: 1px solid #444;
+    }
+
+    .modal-header h2 {
+      color: #fff;
+      margin: 0;
+    }
+
+    .close {
+      color: #aaa;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: color 0.3s ease;
+    }
+
+    .close:hover {
+      color: #fff;
+    }
+
+    .modal-body {
+      padding: 20px;
+      color: #fff;
+    }
+
+    .modal-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      padding: 20px;
+      border-top: 1px solid #444;
+    }
+
+    .preview-btn {
+      background: #17a2b8;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: bold;
+      transition: background 0.3s ease;
+      margin-top: 20px;
+    }
+
+    .preview-btn:hover {
+      background: #138496;
+    }
+
+    .cancel-btn {
+      background: #6c757d;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background 0.3s ease;
+    }
+
+    .cancel-btn:hover {
+      background: #5a6268;
+    }
+
+    .confirm-btn {
+      background: #28a745;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: bold;
+      transition: background 0.3s ease;
+    }
+
+    .confirm-btn:hover {
+      background: #218838;
+    }
+
+    .preview-section {
+      margin-bottom: 20px;
+      padding: 15px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .preview-section h3 {
+      color: #ffc107;
+      margin-bottom: 10px;
+      font-size: 18px;
+    }
+
+    .preview-winner {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin: 10px 0;
+      padding: 10px;
+      background: rgba(255, 255, 255, 0.03);
+      border-radius: 5px;
+    }
+
+    .preview-winner-photo {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid #ffc107;
+    }
+
+    .preview-winner-info {
+      flex: 1;
+    }
+
+    .preview-winner-name {
+      font-weight: bold;
+      color: #fff;
+      margin-bottom: 5px;
+    }
+
+    .preview-winner-falla-id {
+      color: #17a2b8;
+      font-size: 14px;
+      margin-top: 3px;
+    }
+
+    .preview-prize {
+      color: #28a745;
+      font-weight: bold;
+    }
+
+    /* Mobile Responsive Design */
+    @media screen and (max-width: 768px) {
+      body {
+        margin: 0;
+        min-height: 100vh;
+        overflow-x: hidden;
+      }
+
+      .container {
+        padding: 10px 5px;
+      }
+
+      .header {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+        padding: 15px;
+      }
+
+      .header h1 {
+        font-size: 1.5rem;
+        margin-bottom: 10px;
+      }
+
+      .form-section,
+      .competitions-list {
+        padding: 15px;
+        margin: 10px 0;
+      }
+
+      .form-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+      }
+
+      .winner-info {
+        grid-template-columns: 1fr;
+        gap: 10px;
+      }
+
+      .competition-header {
+        flex-direction: column;
+        gap: 10px;
+        align-items: flex-start;
+      }
+
+      /* Mobile-friendly form elements */
+      input, textarea, select {
+        padding: 12px;
+        font-size: 16px;
+        border-radius: 8px;
+      }
+
+      button {
+        width: 100%;
+        margin-bottom: 10px;
+        padding: 15px 20px;
+        font-size: 16px;
+        border-radius: 8px;
+      }
+
+      /* Better mobile spacing */
+      .form-group {
+        margin-bottom: 15px;
+      }
+
+      .form-group label {
+        font-size: 14px;
+        margin-bottom: 5px;
+      }
+
+      /* Mobile-friendly cropper */
+      .cropper-container {
+        padding: 10px;
+        margin: 5px;
+        max-width: 95%;
+        max-height: 90vh;
+      }
+
+      .cropper-buttons {
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .cropper-btn {
+        width: 100%;
+        margin-bottom: 5px;
+        padding: 12px;
+        font-size: 14px;
+      }
+
+      /* Full screen mobile view */
+      .cropper-modal {
+        padding: 0;
+      }
+
+      .cropper-wrapper {
+        max-height: 70vh;
+      }
+
+      /* Mobile-friendly image preview */
+      .image-preview {
+        margin: 10px 0;
+      }
+
+      .image-preview img {
+        max-width: 100%;
+        max-height: 150px;
+        border-radius: 8px;
+      }
+    }
+
+    @media screen and (max-width: 480px) {
+      body {
+        margin: 0;
+      }
+
+      .container {
+        padding: 8px 3px;
+      }
+
+      .header {
+        padding: 10px;
+      }
+
+      .header h1 {
+        font-size: 1.2rem;
+        margin-bottom: 8px;
+      }
+
+      .form-section,
+      .competitions-list {
+        padding: 10px;
+        margin: 8px 0;
+      }
+
+      .form-grid {
+        gap: 10px;
+      }
+
+      .winner-info {
+        gap: 8px;
+      }
+
+      /* Smaller form elements for very small screens */
+      input, textarea, select {
+        padding: 10px;
+        font-size: 16px;
+      }
+
+      button {
+        padding: 12px 15px;
+        font-size: 14px;
+        margin-bottom: 8px;
+      }
+
+      .form-group {
+        margin-bottom: 12px;
+      }
+
+      .form-group label {
+        font-size: 12px;
+        margin-bottom: 4px;
+      }
+
+      /* Smaller image preview for very small screens */
+      .image-preview img {
+        max-height: 120px;
+      }
+
+      /* Compact cropper */
+      .cropper-container {
+        padding: 8px;
+        margin: 3px;
+      }
+
+      .cropper-btn {
+        padding: 10px;
+        font-size: 12px;
+      }
+
+      .submit-btn {
+        padding: 12px 20px;
+        font-size: 14px;
+      }
+    }
+
+    /* Enhanced Confirmation Dialog Styles */
+    .confirmation-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 10000;
+    }
+
+    .confirmation-dialog {
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      text-align: center;
+      max-width: 400px;
+      width: 90%;
+    }
+
+    .confirmation-dialog h3 {
+      margin: 0 0 15px 0;
+      color: #333;
+      font-size: 18px;
+    }
+
+    .confirmation-dialog p {
+      margin: 0 0 25px 0;
+      color: #666;
+      line-height: 1.5;
+    }
+
+    .confirmation-buttons {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+    }
+
+    .confirmation-btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: all 0.3s ease;
+    }
+
+    .confirmation-btn.yes {
+      background: #dc3545;
+      color: white;
+    }
+
+    .confirmation-btn.yes:hover {
+      background: #c82333;
+      transform: translateY(-2px);
+    }
+
+    .confirmation-btn.no {
+      background: #6c757d;
+      color: white;
+    }
+
+    .confirmation-btn.no:hover {
+      background: #5a6268;
+      transform: translateY(-2px);
+    }
+
+    /* Enhanced Success Message Styles */
+    .success-message {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: #28a745;
+      color: white;
+      padding: 15px 20px;
+      border-radius: 8px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      z-index: 10001;
+      display: none;
+      animation: slideInRight 0.3s ease;
+    }
+
+    .success-message.show {
+      display: block;
+    }
+
+    @keyframes slideInRight {
+      from {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    .success-message .success-icon {
+      margin-right: 10px;
+      font-size: 18px;
+    }
+
+    /* Cropper Modal Styles */
+    .cropper-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.9);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 10002;
+    }
+
+    .cropper-container {
+      background: #222;
+      padding: 20px;
+      border-radius: 10px;
+      max-width: 90%;
+      max-height: 90%;
+      overflow: auto;
+    }
+
+    .cropper-container h3 {
+      margin: 0 0 20px 0;
+      text-align: center;
+      color: #fff;
+    }
+
+    .cropper-wrapper {
+      position: relative;
+      max-width: 100%;
+      max-height: 60vh;
+      overflow: hidden;
+      border-radius: 8px;
+      background: #333;
+    }
+
+    .cropper-image {
+      max-width: 100%;
+      max-height: 60vh;
+      display: block;
+    }
+
+    .cropper-buttons {
+      margin-top: 20px;
+      text-align: center;
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .cropper-btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: all 0.3s ease;
+    }
+
+    .cropper-btn.crop {
+      background: #28a745;
+      color: white;
+    }
+
+    .cropper-btn.cancel {
+      background: #6c757d;
+      color: white;
+    }
+
+    .cropper-btn:hover {
+      transform: translateY(-2px);
+    }
+
+    .image-preview {
+      margin-top: 10px;
+      text-align: center;
+    }
+
+    .image-preview img {
+      max-width: 200px;
+      max-height: 140px;
+      border-radius: 6px;
+      border: 2px solid #444;
+    }
+  </style>
+</head>
+<body>
+  <!-- Loading Overlay -->
+  <div id="loadingOverlay" class="loading-overlay">
+    <div class="loading-spinner"></div>
+    <div class="loading-text">Loading Competitions...</div>
+    <div class="loading-subtext">Please wait while we fetch competition data</div>
+  </div>
+
+  <div class="container">
+    <div class="header">
+      <h1>🏆 Competition Management</h1>
+      <a href="adminpage.html" class="back-btn">← Back to Dashboard</a>
+    </div>
+
+    <div class="form-section">
+      <h2>Add New Competition Winner</h2>
+      <form id="competitionForm">
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="competitionName">Competition Name *</label>
+            <input type="text" id="competitionName" required>
+          </div>
+          <div class="form-group">
+            <label for="announcementDate">Announcement Date *</label>
+            <input type="date" id="announcementDate" required>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label for="description">Competition Description *</label>
+          <textarea id="description" placeholder="Describe the competition and its results..." required></textarea>
+        </div>
+
+
+
+        <div class="winners-section">
+          <h3 style="margin: 20px 0 15px 0; color: #fff;">🥇 1st Place Winners</h3>
+          <div id="firstPlaceContainer">
+            <div class="winner-entry">
+              <div class="form-grid">
+                <div class="form-group">
+                  <label>Winner Name *</label>
+                  <input type="text" class="first-place-name" required>
+                </div>
+                <div class="form-group">
+                  <label>Falla ID *</label>
+                  <input type="text" class="first-place-falla-id" placeholder="e.g., FALLA001" required>
+                </div>
+                <div class="form-group">
+                  <label>Winner Photo</label>
+                  <input type="file" class="first-place-photo" accept="image/*">
+                  <img class="winner-photo-preview" alt="Preview" style="display: none;">
+                </div>
+              </div>
+            </div>
+          </div>
+          <button type="button" id="addFirstPlaceBtn" class="add-winner-btn">➕ Add Another 1st Place Winner</button>
+          
+          <div class="form-group" style="margin-top: 20px;">
+            <label for="firstPlacePrize">1st Place Prize *</label>
+            <input type="text" id="firstPlacePrize" placeholder="e.g., $1000 Cash Prize" required>
+          </div>
+        </div>
+
+        <div class="winners-section">
+          <h3 style="margin: 20px 0 15px 0; color: #fff;">🥈 2nd Place Winners</h3>
+          <div id="secondPlaceContainer">
+            <div class="winner-entry">
+              <div class="form-grid">
+                <div class="form-group">
+                  <label>Winner Name</label>
+                  <input type="text" class="second-place-name" placeholder="Optional">
+                </div>
+                <div class="form-group">
+                  <label>Falla ID *</label>
+                  <input type="text" class="second-place-falla-id" placeholder="e.g., FALLA001" required>
+                </div>
+                <div class="form-group">
+                  <label>Winner Photo</label>
+                  <input type="file" class="second-place-photo" accept="image/*">
+                  <img class="winner-photo-preview" alt="Preview" style="display: none;">
+                </div>
+              </div>
+            </div>
+          </div>
+          <button type="button" id="addSecondPlaceBtn" class="add-winner-btn">➕ Add Another 2nd Place Winner</button>
+          
+          <div class="form-group" style="margin-top: 20px;">
+            <label for="secondPlacePrize">2nd Place Prize</label>
+            <input type="text" id="secondPlacePrize" placeholder="e.g., $500 Cash Prize">
+          </div>
+        </div>
+
+        <div class="winners-section">
+          <h3 style="margin: 20px 0 15px 0; color: #fff;">🥉 3rd Place Winners</h3>
+          <div id="thirdPlaceContainer">
+            <div class="winner-entry">
+              <div class="form-grid">
+                <div class="form-group">
+                  <label>Winner Name</label>
+                  <input type="text" class="third-place-name" placeholder="Optional">
+                </div>
+                <div class="form-group">
+                  <label>Falla ID *</label>
+                  <input type="text" class="third-place-falla-id" placeholder="e.g., FALLA001" required>
+                </div>
+                <div class="form-group">
+                  <label>Winner Photo</label>
+                  <input type="file" class="third-place-photo" accept="image/*">
+                  <img class="winner-photo-preview" alt="Preview" style="display: none;">
+                </div>
+              </div>
+            </div>
+          </div>
+          <button type="button" id="addThirdPlaceBtn" class="add-winner-btn">➕ Add Another 3rd Place Winner</button>
+          
+          <div class="form-group" style="margin-top: 20px;">
+            <label for="thirdPlacePrize">3rd Place Prize</label>
+            <input type="text" id="thirdPlacePrize" placeholder="e.g., $250 Cash Prize">
+          </div>
+        </div>
+
+        <button type="button" class="preview-btn" id="previewBtn">
+          👁️ Preview Competition
+        </button>
+      </form>
+
+      <div class="message" id="message" style="display: none;"></div>
+    </div>
+
+    <!-- Preview Modal -->
+    <div id="previewModal" class="modal" style="display: none;">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>🏆 Competition Preview</h2>
+          <span class="close" id="closePreview">&times;</span>
+        </div>
+        <div class="modal-body">
+          <div id="previewContent">
+            <!-- Preview content will be inserted here -->
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="cancel-btn" id="cancelPreview">Cancel</button>
+          <button type="button" class="confirm-btn" id="confirmUpload">✅ Confirm & Upload</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="competitions-list">
+      <h2>Existing Competitions</h2>
+      <div id="competitionsList">
+        <!-- Competitions will be loaded here -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading Overlay -->
+  <div id="loadingOverlay" class="loading-overlay" style="display: none;">
+    <div class="loading-content">
+      <div class="spinner"></div>
+      <p id="loadingText">Processing...</p>
+    </div>
+  </div>
+
+  <!-- Confirmation Dialog -->
+  <div id="confirmationOverlay" class="confirmation-overlay">
+    <div class="confirmation-dialog">
+      <h3 id="confirmationTitle">Confirm Delete</h3>
+      <p id="confirmationMessage">Are you sure you want to delete this item?</p>
+      <div class="confirmation-buttons">
+        <button class="confirmation-btn yes" id="confirmYes">Yes, Delete</button>
+        <button class="confirmation-btn no" id="confirmNo">No, Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Success Message -->
+  <div id="successMessage" class="success-message">
+    <span class="success-icon">✅</span>
+    <span id="successText">Operation completed successfully!</span>
+  </div>
+
+  <!-- Cropper Modal -->
+  <div id="cropperModal" class="cropper-modal">
+    <div class="cropper-container">
+      <h3>Crop Image</h3>
+      <div class="cropper-wrapper">
+        <img id="cropperImage" class="cropper-image" src="" alt="Crop this image">
+      </div>
+      <div class="cropper-buttons">
+        <button class="cropper-btn crop" id="cropBtn">Crop & Save</button>
+        <button class="cropper-btn cancel" id="cancelCropBtn">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
+    import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyD4-bmCzFRmENSiquMfRkLmXY1gGL1ws_Q",
+      authDomain: "sandramfalla-5b850.firebaseapp.com",
+      projectId: "sandramfalla-5b850",
+      storageBucket: "sandramfalla-5b850.firebasestorage.app",
+      messagingSenderId: "31296505457",
+      appId: "1:31296505457:web:cb1d887e21844ad9f5fdd0",
+      measurementId: "G-8CZYT0K63J"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
+
+    // Global variables for cropping
+    let cropper = null;
+    let currentImageFile = null;
+    let currentPhotoInput = null;
+
+    // Image cropping functionality
+    function initializeCropper(imageElement) {
+      if (cropper) {
+        cropper.destroy();
+      }
+      
+      cropper = new Cropper(imageElement, {
+        aspectRatio: 1, // 1:1 aspect ratio for profile photos
+        viewMode: 2,
+        dragMode: 'move',
+        autoCropArea: 1,
+        restore: false,
+        guides: true,
+        center: true,
+        highlight: false,
+        cropBoxMovable: true,
+        cropBoxResizable: true,
+        toggleDragModeOnDblclick: false,
+      });
+    }
+
+    function showCropperModal(imageFile, photoInput) {
+      const modal = document.getElementById('cropperModal');
+      const image = document.getElementById('cropperImage');
+      const reader = new FileReader();
+      
+      reader.onload = function(e) {
+        image.src = e.target.result;
+        modal.style.display = 'flex';
+        currentPhotoInput = photoInput;
+        
+        // Initialize cropper after image loads
+        image.onload = function() {
+          initializeCropper(image);
+        };
+      };
+      
+      reader.readAsDataURL(imageFile);
+    }
+
+    function hideCropperModal() {
+      const modal = document.getElementById('cropperModal');
+      modal.style.display = 'none';
+      if (cropper) {
+        cropper.destroy();
+        cropper = null;
+      }
+      currentPhotoInput = null;
+    }
+
+    function getCroppedImage() {
+      return new Promise((resolve) => {
+        if (!cropper) {
+          resolve(null);
+          return;
+        }
+        
+        const canvas = cropper.getCroppedCanvas({
+          width: 200,  // Profile photo size
+          height: 200,
+          imageSmoothingEnabled: true,
+          imageSmoothingQuality: 'high',
+        });
+        
+        canvas.toBlob((blob) => {
+          resolve(blob);
+        }, 'image/jpeg', 0.9);
+      });
+    }
+
+    // Handle crop button
+    document.getElementById('cropBtn').addEventListener('click', async function() {
+      const croppedBlob = await getCroppedImage();
+      if (croppedBlob && currentPhotoInput) {
+        // Create a new file from the cropped blob
+        const croppedFile = new File([croppedBlob], 'cropped-photo.jpg', { type: 'image/jpeg' });
+        
+        // Update the file input
+        const dataTransfer = new DataTransfer();
+        dataTransfer.items.add(croppedFile);
+        currentPhotoInput.files = dataTransfer.files;
+        
+        // Show preview if there's a preview element
+        const previewElement = currentPhotoInput.parentElement.querySelector('.photo-preview');
+        if (previewElement) {
+          const reader = new FileReader();
+          reader.onload = function(e) {
+            previewElement.src = e.target.result;
+            previewElement.style.display = 'block';
+          };
+          reader.readAsDataURL(croppedFile);
+        }
+        
+        hideCropperModal();
+      }
+    });
+
+    // Handle cancel crop button
+    document.getElementById('cancelCropBtn').addEventListener('click', function() {
+      hideCropperModal();
+    });
+
+    // Function to hide loading overlay
+    function hideLoadingOverlay() {
+      const loadingOverlay = document.getElementById('loadingOverlay');
+      if (loadingOverlay) {
+        loadingOverlay.classList.add('fade-out');
+        setTimeout(() => {
+          loadingOverlay.style.display = 'none';
+        }, 500);
+      }
+    }
+
+    // Enhanced authentication check with back button prevention
+    onAuthStateChanged(auth, (user) => {
+      if (!user) {
+        window.location.replace('login.html');
+      } else {
+        // User is authenticated, hide loading overlay and load data
+        hideLoadingOverlay();
+        loadCompetitions();
+      }
+    });
+
+    // Prevent back button access after logout
+    window.addEventListener('popstate', function(event) {
+      const currentUser = auth.currentUser;
+      if (!currentUser) {
+        window.location.replace('login.html');
+      }
+    });
+
+    // Check for back/forward navigation
+    if (window.performance && window.performance.navigation.type === window.performance.navigation.TYPE_BACK_FORWARD) {
+      const currentUser = auth.currentUser;
+      if (!currentUser) {
+        window.location.replace('login.html');
+      }
+    }
+
+    // Function to show message
+    function showMessage(text, type) {
+      const message = document.getElementById('message');
+      message.textContent = text;
+      message.className = `message ${type}`;
+      message.style.display = 'block';
+      
+      if (type === 'success') {
+        setTimeout(() => {
+          message.style.display = 'none';
+        }, 3000);
+      }
+    }
+
+    // Load existing competitions
+    async function loadCompetitions() {
+      const competitionsList = document.getElementById('competitionsList');
+      const loadingOverlay = document.getElementById('loadingOverlay');
+      const loadingText = document.getElementById('loadingText');
+      
+      // Show loading overlay for initial load
+      if (loadingOverlay.style.display === 'none' || !loadingOverlay.style.display) {
+        loadingOverlay.style.display = 'flex';
+        loadingText.textContent = 'Loading Competitions...';
+      }
+      
+      try {
+        const querySnapshot = await getDocs(collection(db, "competitions"));
+        
+        if (querySnapshot.empty) {
+          competitionsList.innerHTML = '<p style="color: #ccc; text-align: center;">No competitions found.</p>';
+          loadingOverlay.style.display = 'none';
+          return;
+        }
+
+        let competitionsHTML = '';
+        querySnapshot.forEach((doc) => {
+          const data = doc.data();
+          let winnersHTML = '';
+          
+          // 1st Place Winners
+          if (data.firstPlaceCount && data.firstPlaceCount > 0) {
+            winnersHTML += `
+              <div class="winner-card">
+                <div class="winner-title">🥇 1st Place</div>
+                <div class="winner-prize">💰 ${data.firstPlacePrize}</div>
+            `;
+            
+            for (let i = 1; i <= data.firstPlaceCount; i++) {
+              const winnerName = data[`firstPlaceWinner${i}Name`];
+              const winnerPhoto = data[`firstPlaceWinner${i}Photo`];
+              if (winnerName) {
+                winnersHTML += `
+                  <div class="winner-item">
+                    ${winnerPhoto ? `<img src="${winnerPhoto}" alt="${winnerName}" style="width: 60px; height: 60px; object-fit: cover; border-radius: 50%; margin: 5px 0;">` : ''}
+                    <div class="winner-name">${winnerName}</div>
+                  </div>
+                `;
+              }
+            }
+            winnersHTML += '</div>';
+          }
+          
+          // 2nd Place Winners
+          if (data.secondPlaceCount && data.secondPlaceCount > 0) {
+            winnersHTML += `
+              <div class="winner-card">
+                <div class="winner-title">🥈 2nd Place</div>
+                <div class="winner-prize">💰 ${data.secondPlacePrize}</div>
+            `;
+            
+            for (let i = 1; i <= data.secondPlaceCount; i++) {
+              const winnerName = data[`secondPlaceWinner${i}Name`];
+              const winnerPhoto = data[`secondPlaceWinner${i}Photo`];
+              if (winnerName) {
+                winnersHTML += `
+                  <div class="winner-item">
+                    ${winnerPhoto ? `<img src="${winnerPhoto}" alt="${winnerName}" style="width: 60px; height: 60px; object-fit: cover; border-radius: 50%; margin: 5px 0;">` : ''}
+                    <div class="winner-name">${winnerName}</div>
+                  </div>
+                `;
+              }
+            }
+            winnersHTML += '</div>';
+          }
+          
+          // 3rd Place Winners
+          if (data.thirdPlaceCount && data.thirdPlaceCount > 0) {
+            winnersHTML += `
+              <div class="winner-card">
+                <div class="winner-title">🥉 3rd Place</div>
+                <div class="winner-prize">💰 ${data.thirdPlacePrize}</div>
+            `;
+            
+            for (let i = 1; i <= data.thirdPlaceCount; i++) {
+              const winnerName = data[`thirdPlaceWinner${i}Name`];
+              const winnerPhoto = data[`thirdPlaceWinner${i}Photo`];
+              if (winnerName) {
+                winnersHTML += `
+                  <div class="winner-item">
+                    ${winnerPhoto ? `<img src="${winnerPhoto}" alt="${winnerName}" style="width: 60px; height: 60px; object-fit: cover; border-radius: 50%; margin: 5px 0;">` : ''}
+                    <div class="winner-name">${winnerName}</div>
+                  </div>
+                `;
+              }
+            }
+            winnersHTML += '</div>';
+          }
+
+          competitionsHTML += `
+            <div class="competition-item">
+              <div class="competition-header">
+                <div class="competition-name">🏆 ${data.competitionName}</div>
+                <button class="delete-btn" onclick="deleteCompetition('${doc.id}')">Delete</button>
+              </div>
+              <div class="competition-details">
+                <p><strong>Description:</strong> ${data.description}</p>
+                <div class="winner-info">
+                  ${winnersHTML}
+                </div>
+                <div class="announcement-date">
+                  <strong>Announced:</strong> ${new Date(data.announcementDate).toLocaleDateString()}
+                </div>
+              </div>
+            </div>
+          `;
+        });
+        
+        competitionsList.innerHTML = competitionsHTML;
+        loadingOverlay.style.display = 'none';
+      } catch (error) {
+        console.error("Error loading competitions:", error);
+        showMessage("Error loading competitions. Please try again.", "error");
+        loadingOverlay.style.display = 'none';
+      }
+    }
+
+    // Add new competition
+    const competitionForm = document.getElementById('competitionForm');
+    const previewBtn = document.getElementById('previewBtn');
+    const addFirstPlaceBtn = document.getElementById('addFirstPlaceBtn');
+    const addSecondPlaceBtn = document.getElementById('addSecondPlaceBtn');
+    const addThirdPlaceBtn = document.getElementById('addThirdPlaceBtn');
+    const previewModal = document.getElementById('previewModal');
+    const closePreview = document.getElementById('closePreview');
+    const cancelPreview = document.getElementById('cancelPreview');
+    const confirmUpload = document.getElementById('confirmUpload');
+    const previewContent = document.getElementById('previewContent');
+
+    // Add winner functionality for each position
+    addFirstPlaceBtn.addEventListener('click', () => addWinner('firstPlaceContainer', 'first-place-name', 'first-place-falla-id', 'first-place-photo'));
+    addSecondPlaceBtn.addEventListener('click', () => addWinner('secondPlaceContainer', 'second-place-name', 'second-place-falla-id', 'second-place-photo'));
+    addThirdPlaceBtn.addEventListener('click', () => addWinner('thirdPlaceContainer', 'third-place-name', 'third-place-falla-id', 'third-place-photo'));
+
+    function addWinner(containerId, nameClass, fallaIdClass, photoClass) {
+      const container = document.getElementById(containerId);
+      const winnerEntry = document.createElement('div');
+      winnerEntry.className = 'winner-entry';
+      winnerEntry.innerHTML = `
+        <button type="button" class="remove-winner-btn" onclick="removeWinner(this)">×</button>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Winner Name</label>
+            <input type="text" class="${nameClass}">
+          </div>
+          <div class="form-group">
+            <label>Falla ID *</label>
+            <input type="text" class="${fallaIdClass}" placeholder="e.g., FALLA001" required>
+          </div>
+          <div class="form-group">
+            <label>Winner Photo</label>
+            <input type="file" class="${photoClass}" accept="image/*">
+            <img class="winner-photo-preview" alt="Preview" style="display: none;">
+          </div>
+        </div>
+      `;
+      container.appendChild(winnerEntry);
+    }
+
+    // Remove winner functionality
+    window.removeWinner = function(button) {
+      button.parentElement.remove();
+    };
+
+    // Photo preview functionality with cropping
+    document.addEventListener('change', function(e) {
+      if (e.target.type === 'file') {
+        const file = e.target.files[0];
+        if (file) {
+          // Check file size (warn if over 5MB)
+          if (file.size > 5 * 1024 * 1024) {
+            showMessage("Large image detected. It will be automatically compressed for upload.", "error");
+          }
+          
+          // Show cropping modal for photo inputs
+          if (e.target.classList.contains('first-place-photo') || 
+              e.target.classList.contains('second-place-photo') || 
+              e.target.classList.contains('third-place-photo')) {
+            showCropperModal(file, e.target);
+          } else {
+            // For other file inputs, show normal preview
+            const reader = new FileReader();
+            reader.onload = function(e) {
+              const preview = e.target.parentElement.querySelector('.winner-photo-preview');
+              if (preview) {
+                preview.src = e.target.result;
+                preview.style.display = 'block';
+              }
+            };
+            reader.readAsDataURL(file);
+          }
+        }
+      }
+    });
+
+    // Preview functionality
+    previewBtn.addEventListener('click', showPreview);
+    closePreview.addEventListener('click', hidePreview);
+    cancelPreview.addEventListener('click', hidePreview);
+    confirmUpload.addEventListener('click', submitCompetition);
+
+    // Close modal when clicking outside
+    previewModal.addEventListener('click', function(e) {
+      if (e.target === previewModal) {
+        hidePreview();
+      }
+    });
+
+    function showPreview() {
+      // Collect form data
+      const competitionName = document.getElementById('competitionName').value;
+      const announcementDate = document.getElementById('announcementDate').value;
+      const description = document.getElementById('description').value;
+      const firstPlacePrize = document.getElementById('firstPlacePrize').value;
+      const secondPlacePrize = document.getElementById('secondPlacePrize').value;
+      const thirdPlacePrize = document.getElementById('thirdPlacePrize').value;
+
+      // Validation
+      if (!competitionName.trim()) {
+        showMessage("Please enter a competition name.", "error");
+        return;
+      }
+
+      if (!announcementDate) {
+        showMessage("Please select an announcement date.", "error");
+        return;
+      }
+
+      if (!description.trim()) {
+        showMessage("Please enter a competition description.", "error");
+        return;
+      }
+
+      // Collect winners
+      const firstPlaceWinners = collectWinners('#firstPlaceContainer', '.first-place-name', '.first-place-falla-id', '.first-place-photo');
+      const secondPlaceWinners = collectWinners('#secondPlaceContainer', '.second-place-name', '.second-place-falla-id', '.second-place-photo');
+      const thirdPlaceWinners = collectWinners('#thirdPlaceContainer', '.third-place-name', '.third-place-falla-id', '.third-place-photo');
+
+      if (firstPlaceWinners.length === 0) {
+        showMessage("Please add at least one 1st place winner.", "error");
+        return;
+      }
+
+      // Check if all 1st place winners have Falla IDs
+      for (let winner of firstPlaceWinners) {
+        if (!winner.fallaId || !winner.fallaId.trim()) {
+          showMessage("Please enter Falla ID for all 1st place winners.", "error");
+          return;
+        }
+      }
+      // Check if all 2nd place winners have Falla IDs (if any)
+      for (let winner of secondPlaceWinners) {
+        if (winner.name && (!winner.fallaId || !winner.fallaId.trim())) {
+          showMessage("Please enter Falla ID for all 2nd place winners.", "error");
+          return;
+        }
+      }
+      // Check if all 3rd place winners have Falla IDs (if any)
+      for (let winner of thirdPlaceWinners) {
+        if (winner.name && (!winner.fallaId || !winner.fallaId.trim())) {
+          showMessage("Please enter Falla ID for all 3rd place winners.", "error");
+          return;
+        }
+      }
+
+      if (!firstPlacePrize.trim()) {
+        showMessage("Please enter a 1st place prize.", "error");
+        return;
+      }
+
+      // Generate preview HTML
+      let previewHTML = `
+        <div class="preview-section">
+          <h3>🏆 Competition Details</h3>
+          <p><strong>Name:</strong> ${competitionName}</p>
+          <p><strong>Announcement Date:</strong> ${new Date(announcementDate).toLocaleDateString()}</p>
+          <p><strong>Description:</strong> ${description}</p>
+        </div>
+      `;
+
+      // 1st Place Winners
+      if (firstPlaceWinners.length > 0) {
+        previewHTML += `
+          <div class="preview-section">
+            <h3>🥇 1st Place Winners</h3>
+            <p class="preview-prize">💰 Prize: ${firstPlacePrize}</p>
+        `;
+        firstPlaceWinners.forEach(winner => {
+          previewHTML += `
+            <div class="preview-winner">
+              ${winner.photo ? `<img src="${winner.photo}" alt="${winner.name}" class="preview-winner-photo">` : '<div class="preview-winner-photo" style="background: #444; display: flex; align-items: center; justify-content: center; color: #999;">👤</div>'}
+              <div class="preview-winner-info">
+                <div class="preview-winner-name">${winner.name}</div>
+                ${winner.fallaId ? `<div class="preview-winner-falla-id">🆔 Falla ID: ${winner.fallaId}</div>` : ''}
+              </div>
+            </div>
+          `;
+        });
+        previewHTML += '</div>';
+      }
+
+      // 2nd Place Winners
+      if (secondPlaceWinners.length > 0) {
+        previewHTML += `
+          <div class="preview-section">
+            <h3>🥈 2nd Place Winners</h3>
+            <p class="preview-prize">💰 Prize: ${secondPlacePrize || 'Not specified'}</p>
+        `;
+        secondPlaceWinners.forEach(winner => {
+          previewHTML += `
+            <div class="preview-winner">
+              ${winner.photo ? `<img src="${winner.photo}" alt="${winner.name}" class="preview-winner-photo">` : '<div class="preview-winner-photo" style="background: #444; display: flex; align-items: center; justify-content: center; color: #999;">👤</div>'}
+              <div class="preview-winner-info">
+                <div class="preview-winner-name">${winner.name}</div>
+                ${winner.fallaId ? `<div class="preview-winner-falla-id">🆔 Falla ID: ${winner.fallaId}</div>` : ''}
+              </div>
+            </div>
+          `;
+        });
+        previewHTML += '</div>';
+      }
+
+      // 3rd Place Winners
+      if (thirdPlaceWinners.length > 0) {
+        previewHTML += `
+          <div class="preview-section">
+            <h3>🥉 3rd Place Winners</h3>
+            <p class="preview-prize">💰 Prize: ${thirdPlacePrize || 'Not specified'}</p>
+        `;
+        thirdPlaceWinners.forEach(winner => {
+          previewHTML += `
+            <div class="preview-winner">
+              ${winner.photo ? `<img src="${winner.photo}" alt="${winner.name}" class="preview-winner-photo">` : '<div class="preview-winner-photo" style="background: #444; display: flex; align-items: center; justify-content: center; color: #999;">👤</div>'}
+              <div class="preview-winner-info">
+                <div class="preview-winner-name">${winner.name}</div>
+                ${winner.fallaId ? `<div class="preview-winner-falla-id">🆔 Falla ID: ${winner.fallaId}</div>` : ''}
+              </div>
+            </div>
+          `;
+        });
+        previewHTML += '</div>';
+      }
+
+      previewContent.innerHTML = previewHTML;
+      previewModal.style.display = 'flex';
+    }
+
+    function hidePreview() {
+      previewModal.style.display = 'none';
+    }
+
+    function collectWinners(containerId, nameClass, fallaIdClass, photoClass) {
+      const winners = [];
+      const entries = document.querySelectorAll(`${containerId} .winner-entry`);
+      for (let entry of entries) {
+        const name = entry.querySelector(nameClass).value;
+        const fallaId = entry.querySelector(fallaIdClass).value;
+        const photoInput = entry.querySelector(photoClass);
+        if (name.trim()) {
+          winners.push({
+            name: name.trim(),
+            fallaId: fallaId.trim(),
+            photo: photoInput.files[0] ? URL.createObjectURL(photoInput.files[0]) : null
+          });
+        }
+      }
+      return winners;
+    }
+
+    async function submitCompetition() {
+      hidePreview(); // Hide the preview modal
+      
+      const competitionName = document.getElementById('competitionName').value;
+      const announcementDate = document.getElementById('announcementDate').value;
+      const description = document.getElementById('description').value;
+      
+      const firstPlacePrize = document.getElementById('firstPlacePrize').value;
+      const secondPlacePrize = document.getElementById('secondPlacePrize').value;
+      const thirdPlacePrize = document.getElementById('thirdPlacePrize').value;
+
+      // Collect 1st place winners
+      const firstPlaceWinners = [];
+      const firstPlaceEntries = document.querySelectorAll('#firstPlaceContainer .winner-entry');
+      for (let entry of firstPlaceEntries) {
+        const name = entry.querySelector('.first-place-name').value;
+        const fallaId = entry.querySelector('.first-place-falla-id').value;
+        const photo = entry.querySelector('.first-place-photo').files[0];
+        if (name.trim()) {
+          firstPlaceWinners.push({ name: name.trim(), fallaId: fallaId.trim(), photo });
+        }
+      }
+
+      // Collect 2nd place winners
+      const secondPlaceWinners = [];
+      const secondPlaceEntries = document.querySelectorAll('#secondPlaceContainer .winner-entry');
+      for (let entry of secondPlaceEntries) {
+        const name = entry.querySelector('.second-place-name').value;
+        const fallaId = entry.querySelector('.second-place-falla-id').value;
+        const photo = entry.querySelector('.second-place-photo').files[0];
+        if (name.trim()) {
+          secondPlaceWinners.push({ name: name.trim(), fallaId: fallaId.trim(), photo });
+        }
+      }
+
+      // Collect 3rd place winners
+      const thirdPlaceWinners = [];
+      const thirdPlaceEntries = document.querySelectorAll('#thirdPlaceContainer .winner-entry');
+      for (let entry of thirdPlaceEntries) {
+        const name = entry.querySelector('.third-place-name').value;
+        const fallaId = entry.querySelector('.third-place-falla-id').value;
+        const photo = entry.querySelector('.third-place-photo').files[0];
+        if (name.trim()) {
+          thirdPlaceWinners.push({ name: name.trim(), fallaId: fallaId.trim(), photo });
+        }
+      }
+
+      // Validation
+      if (!competitionName.trim()) {
+        showMessage("Please enter a competition name.", "error");
+        return;
+      }
+
+      if (!announcementDate) {
+        showMessage("Please select an announcement date.", "error");
+        return;
+      }
+
+      if (!description.trim()) {
+        showMessage("Please enter a competition description.", "error");
+        return;
+      }
+
+      if (firstPlaceWinners.length === 0) {
+        showMessage("Please add at least one 1st place winner.", "error");
+        return;
+      }
+
+      if (!firstPlacePrize.trim()) {
+        showMessage("Please enter a 1st place prize.", "error");
+        return;
+      }
+
+      // Show loading overlay
+      const loadingOverlay = document.getElementById('loadingOverlay');
+      const loadingText = document.getElementById('loadingText');
+      loadingOverlay.style.display = 'flex';
+      loadingText.textContent = 'Adding Competition Winners...';
+      document.getElementById('message').style.display = 'none';
+
+      try {
+        console.log("Starting competition submission...");
+        console.log("Competition data:", {
+          competitionName,
+          announcementDate,
+          description,
+          firstPlaceWinners: firstPlaceWinners.length,
+          secondPlaceWinners: secondPlaceWinners.length,
+          thirdPlaceWinners: thirdPlaceWinners.length
+        });
+
+        // Process photos for all winners
+        const processWinners = async (winners) => {
+          const processedWinners = [];
+          for (let winner of winners) {
+            try {
+              let photoBase64 = null;
+              if (winner.photo) {
+                // Check if it's an image file
+                if (winner.photo.type && winner.photo.type.startsWith('image/')) {
+                  photoBase64 = await compressAndConvertImage(winner.photo);
+                  console.log(`Compressed photo for ${winner.name}: ${photoBase64.length} bytes`);
+                } else {
+                  photoBase64 = await convertFileToBase64(winner.photo);
+                }
+              }
+              processedWinners.push({
+                name: winner.name,
+                fallaId: winner.fallaId || '',
+                photo: photoBase64
+              });
+            } catch (error) {
+              console.error("Error processing winner photo:", error);
+              // Add winner without photo if photo processing fails
+              processedWinners.push({
+                name: winner.name,
+                fallaId: winner.fallaId || '',
+                photo: ''
+              });
+            }
+          }
+          return processedWinners;
+        };
+
+        console.log("Processing winners...");
+        const processedFirstPlace = await processWinners(firstPlaceWinners);
+        const processedSecondPlace = await processWinners(secondPlaceWinners);
+        const processedThirdPlace = await processWinners(thirdPlaceWinners);
+        
+        console.log("Winners processed, adding to database...");
+        
+        // Ultra-simplified data structure - only strings and simple objects
+        const competitionData = {
+          competitionName: competitionName.trim(),
+          announcementDate: announcementDate,
+          description: description.trim(),
+          firstPlacePrize: firstPlacePrize.trim(),
+          secondPlacePrize: secondPlacePrize.trim() || '',
+          thirdPlacePrize: thirdPlacePrize.trim() || '',
+          createdAt: new Date().toISOString()
+        };
+
+        // Add winners as separate fields to avoid array issues
+        processedFirstPlace.forEach((winner, index) => {
+          competitionData[`firstPlaceWinner${index + 1}Name`] = winner.name;
+          competitionData[`firstPlaceWinner${index + 1}FallaId`] = winner.fallaId || '';
+          competitionData[`firstPlaceWinner${index + 1}Photo`] = winner.photo || '';
+        });
+
+        processedSecondPlace.forEach((winner, index) => {
+          competitionData[`secondPlaceWinner${index + 1}Name`] = winner.name;
+          competitionData[`secondPlaceWinner${index + 1}FallaId`] = winner.fallaId || '';
+          competitionData[`secondPlaceWinner${index + 1}Photo`] = winner.photo || '';
+        });
+
+        processedThirdPlace.forEach((winner, index) => {
+          competitionData[`thirdPlaceWinner${index + 1}Name`] = winner.name;
+          competitionData[`thirdPlaceWinner${index + 1}FallaId`] = winner.fallaId || '';
+          competitionData[`thirdPlaceWinner${index + 1}Photo`] = winner.photo || '';
+        });
+
+        // Add count fields
+        competitionData.firstPlaceCount = processedFirstPlace.length;
+        competitionData.secondPlaceCount = processedSecondPlace.length;
+        competitionData.thirdPlaceCount = processedThirdPlace.length;
+        
+        console.log("Final competition data:", competitionData);
+        
+        // Validate data structure before sending to Firebase
+        const validateData = (data) => {
+          const issues = [];
+          
+          if (typeof data.competitionName !== 'string') issues.push('competitionName is not string');
+          if (typeof data.announcementDate !== 'string') issues.push('announcementDate is not string');
+          if (typeof data.description !== 'string') issues.push('description is not string');
+          if (typeof data.firstPlacePrize !== 'string') issues.push('firstPlacePrize is not string');
+          if (typeof data.secondPlacePrize !== 'string') issues.push('secondPlacePrize is not string');
+          if (typeof data.thirdPlacePrize !== 'string') issues.push('thirdPlacePrize is not string');
+          if (typeof data.createdAt !== 'string') issues.push('createdAt is not string');
+          
+          if (typeof data.firstPlaceCount !== 'number') issues.push('firstPlaceCount is not number');
+          if (typeof data.secondPlaceCount !== 'number') issues.push('secondPlaceCount is not number');
+          if (typeof data.thirdPlaceCount !== 'number') issues.push('thirdPlaceCount is not number');
+          
+          // Validate individual winner fields
+          for (let i = 1; i <= data.firstPlaceCount; i++) {
+            const winnerName = data[`firstPlaceWinner${i}Name`];
+            const winnerPhoto = data[`firstPlaceWinner${i}Photo`];
+            if (typeof winnerName !== 'string') issues.push(`firstPlaceWinner${i}Name is not string`);
+            if (typeof winnerPhoto !== 'string') issues.push(`firstPlaceWinner${i}Photo is not string`);
+          }
+          
+          for (let i = 1; i <= data.secondPlaceCount; i++) {
+            const winnerName = data[`secondPlaceWinner${i}Name`];
+            const winnerPhoto = data[`secondPlaceWinner${i}Photo`];
+            if (typeof winnerName !== 'string') issues.push(`secondPlaceWinner${i}Name is not string`);
+            if (typeof winnerPhoto !== 'string') issues.push(`secondPlaceWinner${i}Photo is not string`);
+          }
+          
+          for (let i = 1; i <= data.thirdPlaceCount; i++) {
+            const winnerName = data[`thirdPlaceWinner${i}Name`];
+            const winnerPhoto = data[`thirdPlaceWinner${i}Photo`];
+            if (typeof winnerName !== 'string') issues.push(`thirdPlaceWinner${i}Name is not string`);
+            if (typeof winnerPhoto !== 'string') issues.push(`thirdPlaceWinner${i}Photo is not string`);
+          }
+          
+          return issues;
+        };
+        
+        const validationIssues = validateData(competitionData);
+        if (validationIssues.length > 0) {
+          throw new Error(`Data validation failed: ${validationIssues.join(', ')}`);
+        }
+        
+        console.log("Data validation passed, sending to Firebase...");
+        
+        await addDoc(collection(db, "competitions"), competitionData);
+
+        console.log("Competition added successfully!");
+        showMessage("Competition winners added successfully!", "success");
+        competitionForm.reset();
+        
+        // Reset form containers
+        document.getElementById('firstPlaceContainer').innerHTML = `
+          <div class="winner-entry">
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Winner Name *</label>
+                <input type="text" class="first-place-name" required>
+              </div>
+              <div class="form-group">
+                <label>Falla ID</label>
+                <input type="text" class="first-place-falla-id" placeholder="e.g., FALLA001">
+              </div>
+              <div class="form-group">
+                <label>Winner Photo</label>
+                <input type="file" class="first-place-photo" accept="image/*">
+                <img class="winner-photo-preview" alt="Preview" style="display: none;">
+              </div>
+            </div>
+          </div>
+        `;
+        
+        document.getElementById('secondPlaceContainer').innerHTML = `
+          <div class="winner-entry">
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Winner Name</label>
+                <input type="text" class="second-place-name" placeholder="Optional">
+              </div>
+              <div class="form-group">
+                <label>Falla ID</label>
+                <input type="text" class="second-place-falla-id" placeholder="e.g., FALLA001">
+              </div>
+              <div class="form-group">
+                <label>Winner Photo</label>
+                <input type="file" class="second-place-photo" accept="image/*">
+                <img class="winner-photo-preview" alt="Preview" style="display: none;">
+              </div>
+            </div>
+          </div>
+        `;
+        
+        document.getElementById('thirdPlaceContainer').innerHTML = `
+          <div class="winner-entry">
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Winner Name</label>
+                <input type="text" class="third-place-name" placeholder="Optional">
+              </div>
+              <div class="form-group">
+                <label>Falla ID</label>
+                <input type="text" class="third-place-falla-id" placeholder="e.g., FALLA001">
+              </div>
+              <div class="form-group">
+                <label>Winner Photo</label>
+                <input type="file" class="third-place-photo" accept="image/*">
+                <img class="winner-photo-preview" alt="Preview" style="display: none;">
+              </div>
+            </div>
+          </div>
+        `;
+        
+        loadCompetitions(); // Reload the list
+        
+      } catch (error) {
+        console.error("Error adding competition:", error);
+        console.error("Error details:", {
+          message: error.message,
+          code: error.code,
+          stack: error.stack
+        });
+        showMessage(`Error adding competition: ${error.message}`, "error");
+      } finally {
+        // Hide loading overlay
+        const loadingOverlay = document.getElementById('loadingOverlay');
+        loadingOverlay.style.display = 'none';
+      }
+    }
+
+    // Helper function to compress and convert image to base64
+    function compressAndConvertImage(file) {
+      return new Promise((resolve, reject) => {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        const img = new Image();
+        
+        img.onload = function() {
+          // Calculate new dimensions (max 300x300 pixels)
+          const maxSize = 300;
+          let width = img.width;
+          let height = img.height;
+          
+          if (width > height) {
+            if (width > maxSize) {
+              height = (height * maxSize) / width;
+              width = maxSize;
+            }
+          } else {
+            if (height > maxSize) {
+              width = (width * maxSize) / height;
+              height = maxSize;
+            }
+          }
+          
+          // Set canvas dimensions
+          canvas.width = width;
+          canvas.height = height;
+          
+          // Draw and compress image
+          ctx.drawImage(img, 0, 0, width, height);
+          
+          // Convert to base64 with compression (0.7 quality)
+          const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.7);
+          
+          // Check if compressed image is still too large
+          if (compressedDataUrl.length > 800000) { // ~800KB limit
+            // Further compress with lower quality
+            const furtherCompressed = canvas.toDataURL('image/jpeg', 0.5);
+            resolve(furtherCompressed);
+          } else {
+            resolve(compressedDataUrl);
+          }
+        };
+        
+        img.onerror = function() {
+          reject(new Error('Failed to load image'));
+        };
+        
+        // Load image from file
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+
+    // Helper function to convert file to base64 (fallback for non-images)
+    function convertFileToBase64(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = error => reject(error);
+      });
+    }
+
+    // Enhanced confirmation dialog function
+    function showConfirmationDialog(title, message, onConfirm) {
+      const overlay = document.getElementById('confirmationOverlay');
+      const titleEl = document.getElementById('confirmationTitle');
+      const messageEl = document.getElementById('confirmationMessage');
+      const yesBtn = document.getElementById('confirmYes');
+      const noBtn = document.getElementById('confirmNo');
+
+      titleEl.textContent = title;
+      messageEl.textContent = message;
+      overlay.style.display = 'flex';
+
+      // Handle Yes button click
+      const handleYes = () => {
+        overlay.style.display = 'none';
+        yesBtn.removeEventListener('click', handleYes);
+        noBtn.removeEventListener('click', handleNo);
+        onConfirm();
+      };
+
+      // Handle No button click
+      const handleNo = () => {
+        overlay.style.display = 'none';
+        yesBtn.removeEventListener('click', handleYes);
+        noBtn.removeEventListener('click', handleNo);
+      };
+
+      yesBtn.addEventListener('click', handleYes);
+      noBtn.addEventListener('click', handleNo);
+    }
+
+    // Enhanced success message function
+    function showSuccessMessage(message) {
+      const successEl = document.getElementById('successMessage');
+      const successText = document.getElementById('successText');
+      
+      successText.textContent = message;
+      successEl.classList.add('show');
+      
+      // Auto-hide after 3 seconds
+      setTimeout(() => {
+        successEl.classList.remove('show');
+      }, 3000);
+    }
+
+    // Delete competition function (make it globally available)
+    window.deleteCompetition = async (docId) => {
+      showConfirmationDialog(
+        'Delete Competition',
+        'Are you sure you want to delete this competition? This action cannot be undone.',
+        async () => {
+          // Show loading overlay
+          const loadingOverlay = document.getElementById('loadingOverlay');
+          const loadingText = document.getElementById('loadingText');
+          loadingOverlay.style.display = 'flex';
+          loadingText.textContent = 'Deleting Competition...';
+          
+          try {
+            await deleteDoc(doc(db, "competitions", docId));
+            showSuccessMessage('✅ Competition deleted successfully!');
+            loadCompetitions(); // Reload the list
+          } catch (error) {
+            console.error("Error deleting competition:", error);
+            showSuccessMessage('❌ Error deleting competition: ' + error.message);
+          } finally {
+            // Hide loading overlay
+            loadingOverlay.style.display = 'none';
+          }
+        }
+      );
+    };
+  </script>
+  <!-- Cropper.js JavaScript -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
+</body>
+</html> 
