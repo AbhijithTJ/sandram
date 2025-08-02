@@ -763,7 +763,7 @@
       }
       
       cropper = new Cropper(imageElement, {
-        aspectRatio: 16/9, // 16:9 aspect ratio for full poster display
+        aspectRatio: 21/9, // Updated to 21:9 aspect ratio for 2560x1080
         viewMode: 2,
         dragMode: 'move',
         autoCropArea: 1,
@@ -812,7 +812,7 @@
         }
         
         const canvas = cropper.getCroppedCanvas({
-          width: 1920,  // Full HD width for high quality
+          width: 2560,  // Updated to 2560px width for ultra-wide format
           height: 1080,
           imageSmoothingEnabled: true,
           imageSmoothingQuality: 'high',
