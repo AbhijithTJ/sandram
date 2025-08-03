@@ -1503,6 +1503,8 @@
     &copy; 2025 Sandram. All rights reserved.
   </footer>
 
+  <div id="toast" class="toast">Trailer feature is coming soon!</div>
+
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
     import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore.js";
@@ -2196,87 +2198,39 @@
     
     // Make watchTrailer globally available
     window.watchTrailer = function(trailerUrl) {
-      alert('Trailer feature is coming soon!');
-      // You can replace this with a more sophisticated modal or redirect
+      const toast = document.getElementById('toast');
+      toast.textContent = 'Trailer feature is coming soon!';
+      toast.classList.add('show');
+      
+      // Hide the toast after 3 seconds
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 3000);
     };
   </script>
 
   <style>
-    .hamburger {
-      display: none;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      width: 38px;
-      height: 38px;
-      background: none;
-      border: none;
-      cursor: pointer;
-      margin-right: 10px;
-      z-index: 1100;
+    .toast {
+      visibility: hidden;
+      min-width: 250px;
+      background-color: #333;
+      color: #fff;
+      text-align: center;
+      border-radius: 4px;
+      padding: 16px;
+      position: fixed;
+      z-index: 1000;
+      left: 50%;
+      bottom: 30px;
+      transform: translateX(-50%);
+      opacity: 0;
+      transition: opacity 0.5s, visibility 0.5s;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     }
-    .hamburger span {
-      display: block;
-      width: 26px;
-      height: 3px;
-      margin: 4px 0;
-      background: #fff;
-      border-radius: 2px;
-      transition: all 0.3s;
-    }
-    @media (max-width: 768px) {
-      .hamburger {
-        display: flex;
-      }
-      header {
-        flex-wrap: nowrap;
-      }
-      .logo-container {
-        flex: 1 1 auto;
-        justify-content: flex-start;
-        margin-left: 0.2rem;
-      }
-      nav#mainNav {
-        position: fixed;
-        top: 56px;
-        left: 0;
-        right: 0;
-        background: #181818;
-        flex-direction: column;
-        align-items: flex-start;
-        padding: 0.5rem 1.2rem 1.2rem 1.2rem;
-        box-shadow: 0 8px 32px rgba(0,0,0,0.25);
-        border-bottom-left-radius: 16px;
-        border-bottom-right-radius: 16px;
-        z-index: 1099;
-        display: none;
-        gap: 0.5rem;
-        animation: fadeInNav 0.25s;
-      }
-      nav#mainNav a {
-        display: block;
-        width: 100%;
-        padding: 0.7rem 0.5rem;
-        font-size: 1.05rem;
-        border-radius: 8px;
-        margin: 0.1rem 0;
-        text-align: left;
-      }
-      .account-icon {
-        margin-top: 0.5rem;
-      }
-      @keyframes fadeInNav {
-        from { opacity: 0; transform: translateY(-10px); }
-        to { opacity: 1; transform: translateY(0); }
-      }
-      header nav {
-        display: none !important;
-      }
-    }
-    @media (max-width: 768px) {
-      header nav#mainNav.open {
-        display: flex !important;
-      }
+
+    .toast.show {
+      visibility: visible;
+      opacity: 1;
     }
   </style>
   <script>
