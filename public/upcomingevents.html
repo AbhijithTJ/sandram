@@ -514,36 +514,58 @@
         // Load events
       querySnapshot.forEach((doc) => {
         const data = doc.data();
-        // Parse date and time from data.time (format: 'YYYY-MM-DD | HH:MM')
+        console.log('Event data:', data); // Debug: Log the raw event data
+        
         let status = '';
-        let displayTime = data.time;
-        if (data.time) {
-          const [dateStr, timeStr] = data.time.split(' | ');
-          const eventDateTime = new Date(dateStr + (timeStr ? 'T' + timeStr : ''));
-          const now = new Date();
-          if (!isNaN(eventDateTime.getTime())) {
-            status = eventDateTime > now ? 'Coming Soon' : 'Event Expired';
+        let displayDateTime = 'No time specified';
+        
+        if (data.date && data.time) {
+          console.log('Raw date:', data.date, 'Raw time:', data.time);
+          
+          try {
+            // Combine date and time with a space in between (format: "YYYY-MM-DD HH:MM")
+            const dateTimeStr = `${data.date} ${data.time}`;
+            const eventDateTime = new Date(dateTimeStr);
+            console.log('Parsed date object:', eventDateTime);
+            
+            if (!isNaN(eventDateTime.getTime())) {
+              const now = new Date();
+              status = eventDateTime > now ? 'Coming Soon' : 'Event Expired';
+              
+              // Format date to be more readable (e.g., "Aug 3, 2023")
+              const options = { year: 'numeric', month: 'short', day: 'numeric' };
+              const formattedDate = eventDateTime.toLocaleDateString('en-US', options);
+              
+              // Format time to 12-hour AM/PM format (e.g., "8:00 PM")
+              let hours = eventDateTime.getHours();
+              const minutes = eventDateTime.getMinutes();
+              const ampm = hours >= 12 ? 'PM' : 'AM';
+              hours = hours % 12;
+              hours = hours ? hours : 12; // Convert 0 to 12
+              const formattedTime = `${hours}:${minutes.toString().padStart(2, '0')} ${ampm}`;
+              
+              // Combine date and time
+              displayDateTime = `${formattedDate} • ${formattedTime}`;
+              console.log('Formatted date time:', displayDateTime);
+            } else {
+              console.warn('Invalid date object created from:', dateTimeStr);
+            }
+          } catch (error) {
+            console.error('Error processing date/time:', error);
           }
-          // Format time to Indian 12-hour AM/PM style
-          if (timeStr) {
-            const [hour, minute] = timeStr.split(':');
-            let h = parseInt(hour, 10);
-            const m = minute;
-            const ampm = h >= 12 ? 'PM' : 'AM';
-            h = h % 12;
-            if (h === 0) h = 12;
-            displayTime = `${dateStr} | ${h}:${m} ${ampm}`;
-          }
+        } else {
+          console.warn('Missing date or time for event:', data.title);
         }
+        
         const eventHTML = `
           <div class="event" style="position:relative;">
               <span class="event-status-badge" style="position:absolute; top:10px; right:10px; z-index:2; padding:6px 14px; border-radius:16px; font-size:13px; font-weight:bold; background:${status === 'Coming Soon' ? '#eaffea' : '#ffeaea'}; color:${status === 'Coming Soon' ? '#28a745' : '#dc3545'}; box-shadow:0 2px 8px rgba(0,0,0,0.08);">${status}</span>
               <img src="${data.image !== 'no image' ? data.image : 'https://via.placeholder.com/160x110'}" alt="${data.title}">
             <div class="event-info">
-                <div class="event-title">${data.title}</div>
-              <div class="event-sub">${data.subtitle}</div>
-                <div class="event-time">${displayTime}</div>
-                <div class="event-sub">${data.link}</div>
+                <div class="event-title">${data.title || 'Untitled Event'}</div>
+                <div class="event-sub">${data.description || 'No description'}</div>
+                <div class="event-time" style="color: #aaa; font-size: 0.9em; margin: 5px 0;">${displayDateTime}</div>
+                <div class="event-sub">${data.location || 'Location not specified'}</div>
             </div>
           </div>
         `;

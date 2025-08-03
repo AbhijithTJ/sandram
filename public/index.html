@@ -1786,10 +1786,10 @@
       }
 
       // Create ticker message
-      let message = `🏆 ${competitionName} - Winner Announced! Place check the results at bottom!`;
+      let message = `🏆 ${competitionName} - Winner Announced! please check the results at bottom!`;
       if (winners.length > 0) {
         const winnerNames = winners.slice(0, 5).map(w => w.name).join(', ');
-        message = `🏆 ${competitionName} - Winners: ${winnerNames}${winners.length > 5 ? ' and more!' : ''} - Place check the results at bottom!`;
+        message = `🏆 ${competitionName} - Winners: ${winnerNames}${winners.length > 5 ? ' and more!' : ''} - please  check the results at bottom!`;
       }
 
       tickerWinnerNames.textContent = message;
