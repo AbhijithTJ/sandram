@@ -51,7 +51,10 @@
     .logo-container h1 {
       margin: 0;
       font-size: 1.5rem;
-      color: #fff;
+      font-weight: 700;
+      color: var(--imdb-white);
+      letter-spacing: -0.5px;
+      font-family: 'Arial Black', Arial, sans-serif;
     }
 
     header nav a {
@@ -598,23 +601,22 @@
 
 </head>
 <body>
-
   <!-- Loading Overlay -->
   <div id="loadingOverlay" class="loading-overlay">
     <div class="loading-spinner"></div>
     <div class="loading-text">Loading Members...</div>
     <div class="loading-subtext">Please wait while we fetch team members</div>
-      </div>
-     
+  </div>
+
   <header>
     <button class="hamburger" id="hamburgerBtn" aria-label="Open navigation" aria-expanded="false">
       <span></span><span></span><span></span>
     </button>
     <div class="logo-container">
-      <img src="images/sandram-logo.png" alt="Sandram Logo" class="logo" />
-      <h1>Sandram</h1>
+        <img src="images/sandram-logo.png" alt="Sandram Logo" class="logo" />
+    <h1>Sandram</h1>
     </div>
-    <nav>
+    <nav id="mainNav">
       <a href="index.html">HOME</a>
       <a href="upcomingevents.html">UPCOMING EVENTS</a>
       <a href="members.html" class="active">MEMBERS</a>
