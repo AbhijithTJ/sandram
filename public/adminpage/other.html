@@ -645,22 +645,49 @@
         const data = doc.data();
         const contentId = doc.id;
 
-        const contentHTML = `
-          <div class="content-item">
-            <div class="content-info">
-              <h4>Current Other Content</h4>
-              <p><strong>Behind The Scenes:</strong> ${data.behindTheScenes ? data.behindTheScenes.substring(0, 150) + (data.behindTheScenes.length > 150 ? '...' : '') : 'Not set'}</p>
-              <p><strong>Interview:</strong> ${data.interview ? data.interview.substring(0, 150) + (data.interview.length > 150 ? '...' : '') : 'Not set'}</p>
-              <p><strong>Analysis:</strong> ${data.analysis ? data.analysis.substring(0, 150) + (data.analysis.length > 150 ? '...' : '') : 'Not set'}</p>
-            </div>
-            <div class="button-group">
-              <button onclick="editContent('${contentId}', '${data.behindTheScenes ? data.behindTheScenes.replace(/'/g, "\\'") : ''}', '${data.interview ? data.interview.replace(/'/g, "\\'") : ''}', '${data.analysis ? data.analysis.replace(/'/g, "\\'") : ''}')" class="edit-btn">Edit</button>
-              <button onclick="deleteContent('${contentId}')" class="delete-btn">Delete</button>
-            </div>
+        // Create the content item container
+        const contentItem = document.createElement('div');
+        contentItem.className = 'content-item';
+        contentItem.id = `content-${contentId}`;
+        
+        // Create the content HTML
+        contentItem.innerHTML = `
+          <div class="content-info">
+            <h4>Current Other Content</h4>
+            <p><strong>Behind The Scenes:</strong> <span class="behind-text">${data.behindTheScenes ? data.behindTheScenes.substring(0, 150) + (data.behindTheScenes.length > 150 ? '...' : '') : 'Not set'}</span></p>
+            <p><strong>Interview:</strong> <span class="interview-text">${data.interview ? data.interview.substring(0, 150) + (data.interview.length > 150 ? '...' : '') : 'Not set'}</span></p>
+            <p><strong>Analysis:</strong> <span class="analysis-text">${data.analysis ? data.analysis.substring(0, 150) + (data.analysis.length > 150 ? '...' : '') : 'Not set'}</span></p>
+          </div>
+          <div class="button-group">
+            <button class="edit-btn">Edit</button>
+            <button class="delete-btn">Delete</button>
           </div>
         `;
 
-        contentList.innerHTML = contentHTML;
+        // Clear the content list and append the new content
+        contentList.innerHTML = '';
+        contentList.appendChild(contentItem);
+        
+        // Add click handler for edit button
+        const editBtn = contentItem.querySelector('.edit-btn');
+        if (editBtn) {
+          editBtn.addEventListener('click', () => {
+            editContent(
+              contentId,
+              data.behindTheScenes || '',
+              data.interview || '',
+              data.analysis || ''
+            );
+          });
+        }
+        
+        // Add click handler for delete button
+        const deleteBtn = contentItem.querySelector('.delete-btn');
+        if (deleteBtn) {
+          deleteBtn.addEventListener('click', () => {
+            deleteContent(contentId);
+          });
+        }
       } catch (error) {
         contentList.innerHTML = `<div style="text-align: center; color: red;">Error loading current content: ${error.message}</div>`;
       }
@@ -668,21 +695,44 @@
 
     // Edit content function
     window.editContent = function(contentId, behindTheScenes, interview, analysis) {
-      document.getElementById('behindTheScenes').value = behindTheScenes;
-      document.getElementById('interview').value = interview;
-      document.getElementById('analysis').value = analysis;
-      
-      window.currentEditId = contentId;
-      
-      const addButton = document.getElementById('addContentBtn');
-      if (addButton) {
-        addButton.textContent = 'Update Content';
-        addButton.onclick = updateContent;
-        addButton.style.backgroundColor = '#ffc107';
-        addButton.style.color = '#000';
+      try {
+        // Decode any HTML entities that were escaped
+        const decodeHtml = (html) => {
+          if (!html) return '';
+          const txt = document.createElement('textarea');
+          txt.innerHTML = html;
+          return txt.value;
+        };
+        
+        // Set the form values
+        document.getElementById('behindTheScenes').value = decodeHtml(behindTheScenes || '');
+        document.getElementById('interview').value = decodeHtml(interview || '');
+        document.getElementById('analysis').value = decodeHtml(analysis || '');
+        
+        // Store the content ID for update
+        window.currentEditId = contentId;
+        
+        // Update the add button to be an update button
+        const addButton = document.getElementById('addContentBtn');
+        if (addButton) {
+          addButton.textContent = 'Update Content';
+          addButton.onclick = function(e) {
+            e.preventDefault();
+            updateContent();
+            return false;
+          };
+          addButton.style.backgroundColor = '#ffc107';
+          addButton.style.color = '#000';
+        }
+        
+        // Scroll to the form
+        document.getElementById('behindTheScenes').scrollIntoView({ behavior: 'smooth' });
+        
+        console.log('Edit mode activated for content ID:', contentId);
+      } catch (error) {
+        console.error('Error in editContent:', error);
+        alert('Error loading content for editing. Please check console for details.');
       }
-      
-      document.getElementById('behindTheScenes').scrollIntoView({ behavior: 'smooth' });
     };
 
     // Update content function
@@ -691,6 +741,7 @@
       const interview = document.getElementById('interview').value.trim();
       const analysis = document.getElementById('analysis').value.trim();
       const msg = document.getElementById('message');
+      const addButton = document.getElementById('addContentBtn');
 
       msg.textContent = "";
       msg.style.color = "#0f0";
@@ -701,30 +752,67 @@
         return;
       }
 
+      // Show loading state
+      if (addButton) {
+        addButton.disabled = true;
+        addButton.classList.add('loading');
+        addButton.textContent = 'Updating...';
+      }
+
+      const loadingOverlay = document.getElementById('loadingOverlay');
+      const loadingText = loadingOverlay?.querySelector('.loading-subtext');
+      
       try {
+        // Show loading overlay
+        if (loadingOverlay) {
+          loadingOverlay.style.display = 'flex';
+          if (loadingText) {
+            loadingText.textContent = 'Updating content...';
+          }
+        }
+
         const contentRef = doc(db, "otherContent", window.currentEditId);
         await updateDoc(contentRef, {
           behindTheScenes,
           interview,
-          analysis
+          analysis,
+          updatedAt: new Date()
         });
 
-        msg.textContent = "✅ Content updated successfully!";
+        if (loadingOverlay) {
+          loadingOverlay.style.display = 'none';
+        }
         
-        document.querySelectorAll("textarea").forEach(i => i.value = "");
-        const addButton = document.getElementById('addContentBtn');
         if (addButton) {
+          addButton.disabled = false;
+          addButton.classList.remove('loading');
           addButton.textContent = 'Add Content';
           addButton.onclick = addContent;
           addButton.style.backgroundColor = 'blue';
           addButton.style.color = 'white';
         }
+
+        msg.textContent = "✅ Content updated successfully!";
         
+        // Clear form
+        document.querySelectorAll("textarea").forEach(i => i.value = "");
+        
+        // Reset edit state
         window.currentEditId = null;
         
+        // Reload the content list
         loadAllContent();
       } catch (error) {
-        msg.textContent = "❌ Error: " + error.message;
+        console.error("Update error:", error);
+        if (loadingOverlay) {
+          loadingOverlay.style.display = 'none';
+        }
+        if (addButton) {
+          addButton.disabled = false;
+          addButton.classList.remove('loading');
+          addButton.textContent = 'Update Content';
+        }
+        msg.textContent = "❌ Error: " + (error.message || "Failed to update content");
         msg.style.color = "red";
       }
     };
@@ -873,19 +961,23 @@
       }
 
       const loadingOverlay = document.getElementById('loadingOverlay');
-      const loadingText = document.getElementById('loadingText');
+      const loadingText = loadingOverlay.querySelector('.loading-subtext');
       
       try {
         // Show loading overlay
         loadingOverlay.style.display = 'flex';
-        loadingText.textContent = 'Processing...';
+        if (loadingText) {
+          loadingText.textContent = 'Processing...';
+        }
 
         // First, delete any existing content
         const existingContent = await getDocs(collection(db, "otherContent"));
         const deletePromises = existingContent.docs.map(doc => deleteDoc(doc.ref));
         await Promise.all(deletePromises);
 
-        loadingText.textContent = 'Saving content...';
+        if (loadingText) {
+          loadingText.textContent = 'Saving content...';
+        }
 
         // Add new content
         await addDoc(collection(db, "otherContent"), {
@@ -894,17 +986,28 @@
           analysis
         });
 
-        loadingText.textContent = 'Content added successfully!';
+        if (loadingText) {
+          loadingText.textContent = 'Content added successfully!';
+        }
         
         // Hide loading overlay after a short delay
         setTimeout(() => {
-          loadingOverlay.style.display = 'none';
+          hideLoadingOverlay();
+          
+          // Reset form and show success message
+          document.querySelectorAll("textarea").forEach(i => i.value = "");
+          
+          if (addButton) {
+            addButton.disabled = false;
+            addButton.classList.remove('loading');
+            addButton.textContent = 'Add Content';
+          }
+          
+          msg.textContent = "✅ Content added successfully!";
+          
+          // Reload the content list
+          loadAllContent();
         }, 1000);
-
-        msg.textContent = "✅ New content added successfully! (Old content deleted)";
-        document.querySelectorAll("textarea").forEach(i => i.value = "");
-        
-        loadAllContent();
       } catch (error) {
         loadingOverlay.style.display = 'none';
         msg.textContent = "❌ Error: " + error.message;

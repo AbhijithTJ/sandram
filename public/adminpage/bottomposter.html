@@ -133,312 +133,6 @@
       text-align: center;
     }
 
-    /* Cropper Modal Styles */
-    .cropper-modal {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.9);
-      display: none;
-      justify-content: center;
-      align-items: center;
-      z-index: 10002;
-    }
-
-    .cropper-container {
-      background: #222;
-      padding: 20px;
-      border-radius: 10px;
-      max-width: 90%;
-      max-height: 90%;
-      overflow: auto;
-    }
-
-    .cropper-container h3 {
-      margin: 0 0 20px 0;
-      text-align: center;
-      color: #fff;
-    }
-
-    .cropper-wrapper {
-      position: relative;
-      max-width: 100%;
-      max-height: 60vh;
-      overflow: hidden;
-      border-radius: 8px;
-      background: #333;
-    }
-
-    .cropper-image {
-      max-width: 100%;
-      max-height: 60vh;
-      display: block;
-    }
-
-    .cropper-buttons {
-      margin-top: 20px;
-      text-align: center;
-      display: flex;
-      gap: 10px;
-      justify-content: center;
-      flex-wrap: wrap;
-    }
-
-    .cropper-btn {
-      padding: 10px 20px;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      font-weight: bold;
-      transition: all 0.3s ease;
-    }
-
-    .cropper-btn.crop {
-      background: #28a745;
-      color: white;
-    }
-
-    .cropper-btn.cancel {
-      background: #6c757d;
-      color: white;
-    }
-
-    .cropper-btn:hover {
-      transform: translateY(-2px);
-    }
-
-    .image-preview {
-      margin-top: 10px;
-      text-align: center;
-    }
-
-    .image-preview img {
-      max-width: 200px;
-      max-height: 140px;
-      border-radius: 6px;
-      border: 2px solid #444;
-    }
-
-    /* Mobile Responsive Design */
-    @media screen and (max-width: 768px) {
-      body {
-        padding: 10px 5px;
-        margin: 0;
-        min-height: 100vh;
-        overflow-x: hidden;
-      }
-
-      h1 {
-        font-size: 20px;
-        margin-bottom: 15px;
-        text-align: center;
-      }
-
-      h2 {
-        font-size: 18px;
-        text-align: center;
-      }
-
-      .form-group {
-        margin-bottom: 15px;
-      }
-
-      input, textarea {
-        padding: 12px;
-        font-size: 16px; /* Prevents zoom on iOS */
-        border-radius: 8px;
-      }
-
-      button {
-        width: 100%;
-        margin-bottom: 10px;
-        padding: 15px 20px;
-        font-size: 16px;
-        border-radius: 8px;
-      }
-
-      #preview {
-        margin-top: 20px;
-        padding: 15px;
-        border-radius: 8px;
-      }
-
-      #preview img {
-        max-width: 100%;
-        height: auto;
-        border-radius: 6px;
-      }
-
-      .poster-item {
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
-        margin: 10px 0;
-        border-radius: 12px;
-      }
-
-      .poster-item img {
-        width: 100%;
-        max-width: 250px;
-        height: 180px;
-        border-radius: 8px;
-        margin-bottom: 10px;
-        object-fit: cover;
-      }
-
-      .poster-actions {
-        flex-direction: column;
-        gap: 8px;
-        width: 100%;
-      }
-
-      .poster-actions button {
-        width: 100%;
-        margin: 0;
-        padding: 12px;
-        font-size: 14px;
-      }
-
-      .cropper-container {
-        padding: 10px;
-        margin: 5px;
-        max-width: 95%;
-        max-height: 90vh;
-      }
-
-      .cropper-buttons {
-        flex-direction: column;
-        gap: 8px;
-      }
-
-      .cropper-btn {
-        width: 100%;
-        margin-bottom: 5px;
-        padding: 12px;
-        font-size: 14px;
-      }
-
-      /* Full screen mobile view */
-      .cropper-modal {
-        padding: 0;
-      }
-
-      .cropper-wrapper {
-        max-height: 70vh;
-      }
-
-      /* Better mobile spacing */
-      .form-group label {
-        font-size: 14px;
-        margin-bottom: 5px;
-      }
-
-      .message {
-        font-size: 14px;
-        text-align: center;
-        margin: 15px 0;
-      }
-
-      /* Mobile-friendly image preview */
-      .image-preview {
-        margin: 10px 0;
-      }
-
-      .image-preview img {
-        max-width: 100%;
-        max-height: 150px;
-        border-radius: 8px;
-      }
-    }
-
-    @media screen and (max-width: 480px) {
-      body {
-        padding: 8px 3px;
-        margin: 0;
-      }
-
-      h1 {
-        font-size: 18px;
-        margin-bottom: 10px;
-      }
-
-      h2 {
-        font-size: 16px;
-      }
-
-      input, textarea {
-        padding: 10px;
-        font-size: 16px;
-      }
-
-      button {
-        padding: 12px 15px;
-        font-size: 14px;
-        margin-bottom: 8px;
-      }
-
-      .message {
-        font-size: 12px;
-        margin: 10px 0;
-      }
-
-      .form-group {
-        margin-bottom: 12px;
-      }
-
-      .form-group label {
-        font-size: 12px;
-        margin-bottom: 4px;
-      }
-
-      /* Smaller image preview for very small screens */
-      .image-preview img {
-        max-height: 120px;
-      }
-
-      /* Compact poster items */
-      .poster-item {
-        margin: 8px 0;
-        padding: 10px;
-      }
-
-      .poster-item img {
-        max-width: 200px;
-        height: 140px;
-      }
-
-      /* Compact cropper */
-      .cropper-container {
-        padding: 8px;
-        margin: 3px;
-      }
-
-      .cropper-btn {
-        padding: 10px;
-        font-size: 12px;
-      }
-    }
-
-    /* Tablet Responsive Design */
-    @media screen and (min-width: 769px) and (max-width: 1024px) {
-      body {
-        padding: 30px 20px;
-      }
-
-      .form-group {
-        max-width: 600px;
-        margin-left: auto;
-        margin-right: auto;
-      }
-
-      button {
-        margin-right: 10px;
-        margin-bottom: 10px;
-      }
-    }
-
     /* Poster display styles */
     .poster-item {
       display: flex;
@@ -591,6 +285,23 @@
       margin-right: 10px;
       font-size: 18px;
     }
+
+    /* Add this new style for the immediate image preview */
+    #imagePreview {
+      margin-top: 10px;
+      text-align: center;
+    }
+    
+    #previewImage {
+      max-width: 150px;
+      max-height: 100px;
+      width: auto;
+      height: auto;
+      border-radius: 4px;
+      border: 1px solid #444;
+      background: #333;
+      padding: 3px;
+    }
   </style>
 </head>
 <body>
@@ -600,20 +311,6 @@
     <div class="loading-spinner"></div>
     <div id="loadingText" class="loading-text">Loading Admin Panel</div>
     <div class="loading-subtext">Checking authentication...</div>
-  </div>
-
-  <!-- Cropper Modal -->
-  <div id="cropperModal" class="cropper-modal">
-    <div class="cropper-container">
-      <h3>Crop Image</h3>
-      <div class="cropper-wrapper">
-        <img id="cropperImage" class="cropper-image" src="" alt="Crop this image">
-      </div>
-      <div class="cropper-buttons">
-        <button class="cropper-btn crop" id="cropBtn">Crop & Save</button>
-        <button class="cropper-btn cancel" id="cancelCropBtn">Cancel</button>
-      </div>
-    </div>
   </div>
 
   <!-- Confirmation Dialog -->
@@ -661,8 +358,8 @@
       <h2 style="margin-bottom:10px;">Poster Preview</h2>
       <p><strong>Description:</strong> <span id="prevDescription"></span></p>
       <div>
-        <strong>Image:</strong><br/>
-        <img id="prevImage" style="max-width:300px; max-height:200px; width:auto; height:auto; margin-top:10px; border-radius:6px; object-fit:cover;" />
+        <strong>Image Preview:</strong><br/>
+        <img id="prevImage" style="max-width:200px; max-height:150px; width:auto; height:auto; margin-top:10px; border-radius:6px; object-fit:contain; background:#333; padding:5px;" />
       </div>
     </div>
   </div>
@@ -697,8 +394,7 @@
     const db = getFirestore(app);
     const auth = getAuth(app);
 
-    // Global variables for cropping
-    let cropper = null;
+    // Global variable for current image file
     let currentImageFile = null;
 
     // Function to hide loading overlay
@@ -744,89 +440,11 @@
     const cloudName = 'dd7kyehrl';
     const uploadPreset = 'event-uploads';
 
-    // Image cropping functionality
-    function initializeCropper(imageElement) {
-      if (cropper) {
-        cropper.destroy();
-      }
-      
-      cropper = new Cropper(imageElement, {
-        aspectRatio: 10/7, // 200x140 aspect ratio
-        viewMode: 2,
-        dragMode: 'move',
-        autoCropArea: 1,
-        restore: false,
-        guides: true,
-        center: true,
-        highlight: false,
-        cropBoxMovable: true,
-        cropBoxResizable: true,
-        toggleDragModeOnDblclick: false,
-      });
-    }
-
-    function showCropperModal(imageFile) {
-      const modal = document.getElementById('cropperModal');
-      const image = document.getElementById('cropperImage');
-      const reader = new FileReader();
-      
-      reader.onload = function(e) {
-        image.src = e.target.result;
-        modal.style.display = 'flex';
-        
-        // Initialize cropper after image loads
-        image.onload = function() {
-          initializeCropper(image);
-        };
-      };
-      
-      reader.readAsDataURL(imageFile);
-    }
-
-    function hideCropperModal() {
-      const modal = document.getElementById('cropperModal');
-      modal.style.display = 'none';
-      if (cropper) {
-        cropper.destroy();
-        cropper = null;
-      }
-    }
-
-    function getCroppedImage() {
-      return new Promise((resolve) => {
-        if (!cropper) {
-          resolve(null);
-          return;
-        }
-        
-        const canvas = cropper.getCroppedCanvas({
-          width: 400,  // 2x the display size for high quality
-          height: 280,
-          imageSmoothingEnabled: true,
-          imageSmoothingQuality: 'high',
-        });
-        
-        canvas.toBlob((blob) => {
-          resolve(blob);
-        }, 'image/jpeg', 0.9);
-      });
-    }
-
     // Handle file input change
     document.getElementById('imageFile').addEventListener('change', function(e) {
       const file = e.target.files[0];
       if (file) {
         currentImageFile = file;
-        showCropperModal(file);
-      }
-    });
-
-    // Handle crop button
-    document.getElementById('cropBtn').addEventListener('click', async function() {
-      const croppedBlob = await getCroppedImage();
-      if (croppedBlob) {
-        // Create a new file from the cropped blob
-        currentImageFile = new File([croppedBlob], 'cropped-image.jpg', { type: 'image/jpeg' });
         
         // Show preview
         const preview = document.getElementById('imagePreview');
@@ -838,21 +456,15 @@
           preview.style.display = 'block';
         };
         
-        reader.readAsDataURL(croppedBlob);
-        hideCropperModal();
+        reader.readAsDataURL(file);
       }
     });
 
-    // Handle cancel crop button
-    document.getElementById('cancelCropBtn').addEventListener('click', function() {
-      hideCropperModal();
-      document.getElementById('imageFile').value = '';
-      currentImageFile = null;
-    });
-
-    // Load current poster for admin management
+    // Load all posters for admin management
     window.loadAllPosters = async function() {
       const postersList = document.getElementById('postersList');
+      if (!postersList) return;
+      
       postersList.innerHTML = '<div style="text-align: center; color: #ccc;">Loading current poster...</div>';
 
       try {
@@ -863,27 +475,78 @@
           return;
         }
 
+        // Create the content item container
+        const contentItem = document.createElement('div');
+        contentItem.className = 'content-item';
+        
         // Get the first (and only) poster
         const doc = querySnapshot.docs[0];
         const data = doc.data();
-        const posterId = doc.id;
-
-        const posterHTML = `
-          <div style="background: #333; margin: 10px 0; padding: 20px; border-radius: 8px; display: flex; align-items: center; gap: 20px;">
-            <img src="${data.image}" alt="Current Poster" style="width: 120px; height: 80px; object-fit: cover; border-radius: 4px;">
-            <div style="flex: 1;">
-              <h4 style="margin: 0 0 10px 0; color: #fff;">Current Bottom Poster</h4>
-              <p style="margin: 0; color: #ccc; max-width: 500px; line-height: 1.4;">${data.description}</p>
-            </div>
-            <div style="display: flex; gap: 10px;">
-              <button onclick="editPoster('${posterId}', '${data.description.replace(/'/g, "\\'")}', '${data.image}')" style="background-color: #28a745; color: white; padding: 8px 12px; border: none; border-radius: 4px; cursor: pointer;">Edit</button>
-              <button onclick="deletePoster('${posterId}')" style="background-color: #dc3545; color: white; padding: 8px 12px; border: none; border-radius: 4px; cursor: pointer;">Delete</button>
-            </div>
+        const contentId = doc.id;
+        
+        // Create the content HTML
+        contentItem.innerHTML = `
+          <div class="content-info">
+            <h4>Current Bottom Poster</h4>
+            <p><strong>Description:</strong> ${data.description ? data.description : 'Not set'}</p>
+            <p><strong>Image:</strong> ${data.image ? 
+              `<div style="margin-top:10px;">
+                <img src="${data.image}" alt="Poster Preview" style="max-width:200px; max-height:150px; border-radius:4px; border:1px solid #444; background:#333; padding:5px;">
+              </div>` : 
+              'Not set'}</p>
+          </div>
+          <div class="button-group">
+            <button class="edit-btn">Edit</button>
+            <button class="delete-btn">Delete</button>
           </div>
         `;
 
-        postersList.innerHTML = posterHTML;
+        // Clear the posters list and append the new content
+        postersList.innerHTML = '';
+        postersList.appendChild(contentItem);
+        
+        // Add click handler for edit button
+        const editBtn = contentItem.querySelector('.edit-btn');
+        if (editBtn) {
+          editBtn.addEventListener('click', () => {
+            document.getElementById('posterDescription').value = data.description || '';
+            window.currentEditId = contentId;
+            window.currentImageUrl = data.image || null;
+            
+            // Update the add button to be an update button
+            const addButton = document.getElementById('addPosterBtn');
+            if (addButton) {
+              addButton.textContent = 'Update Poster';
+              addButton.onclick = updatePoster;
+              addButton.style.backgroundColor = '#ffc107';
+              addButton.style.color = '#000';
+            }
+            
+            // Show the image preview if exists
+            if (data.image) {
+              const previewImage = document.getElementById('previewImage');
+              const imagePreview = document.getElementById('imagePreview');
+              if (previewImage && imagePreview) {
+                previewImage.src = data.image;
+                imagePreview.style.display = 'block';
+              }
+            }
+            
+            // Scroll to the form
+            document.getElementById('posterDescription').scrollIntoView({ behavior: 'smooth' });
+          });
+        }
+        
+        // Add click handler for delete button
+        const deleteBtn = contentItem.querySelector('.delete-btn');
+        if (deleteBtn) {
+          deleteBtn.addEventListener('click', () => {
+            deletePoster(contentId);
+          });
+        }
+        
       } catch (error) {
+        console.error('Error loading posters:', error);
         postersList.innerHTML = `<div style="text-align: center; color: red;">Error loading current poster: ${error.message}</div>`;
       }
     };
@@ -1276,7 +939,5 @@
     loadAllPosters();
 
   </script>
-  <!-- Cropper.js JavaScript -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
 </body>
 </html>
